@@ -1,58 +1,69 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-title ERNUR V4 / PUSH 3D ASSETS
+title ERNUR V5 - PUSH 3D ASSETS
 
 echo.
-echo ===============================================
-echo   ERNUR V4 / INSTALL + PUSH 3D ASSETS
- echo ===============================================
+echo ==========================================================
+echo   ERNUR PORTFOLIO V5 - PUSH 3D ASSETS TO GITHUB
+echo ==========================================================
 echo.
 
+echo Step 1: finding/copying all four GLB files...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0setup-assets.ps1"
 
+echo.
+echo Step 2: checking required files...
+set "MISSING=0"
+if not exist "assets\models\robot\DECODE Simple Bot.glb" set "MISSING=1"
+if not exist "assets\models\study\3209-0001-0007.glb" set "MISSING=1"
+if not exist "assets\models\fusion\Main Assembly.glb" set "MISSING=1"
+if not exist "assets\models\fusion\kicker_insert.glb" set "MISSING=1"
+
+if "%MISSING%"=="1" (
+  echo.
+  echo One or more GLB files are missing. Nothing was pushed.
+  echo Run setup-assets.ps1 and check the paths shown there.
+  pause
+  exit /b 1
+)
+
 where git >nul 2>nul
-if not %errorlevel%==0 (
-  echo Git is not installed or not available in PATH.
-  echo The assets were still copied locally if found.
+if errorlevel 1 (
+  echo Git was not found on this computer.
   pause
   exit /b 1
 )
 
-if not exist ".git" (
-  echo This folder is not a Git clone.
-  echo Clone the repository first, then run this file from the cloned folder.
-  pause
-  exit /b 1
-)
-
-git add "assets/models/robot/DECODE Simple Bot.glb" 2>nul
-git add "assets/models/keyboard/lowprofilemechanicalkeyboard.obj" 2>nul
-git add "assets/models/keyboard/lowprofilemechanicalkeyboard.mtl" 2>nul
+echo.
+echo Step 3: adding GLB files...
+git add "assets/models/robot/DECODE Simple Bot.glb" "assets/models/study/3209-0001-0007.glb" "assets/models/fusion/Main Assembly.glb" "assets/models/fusion/kicker_insert.glb"
 
 git diff --cached --quiet
-if %errorlevel%==0 (
-  echo.
-  echo No new 3D assets to commit.
+if not errorlevel 1 (
+  echo No new 3D asset changes to commit.
   pause
   exit /b 0
 )
 
-git commit -m "Add authentic robot and keyboard 3D assets"
-if not %errorlevel%==0 (
+echo.
+echo Step 4: committing...
+git commit -m "Add V5 portfolio GLB assets"
+if errorlevel 1 (
   echo Commit failed. Check your Git configuration.
   pause
   exit /b 1
 )
 
-git push origin main
-if not %errorlevel%==0 (
-  echo Push failed. You may need to sign in to GitHub in Git Credential Manager.
+echo.
+echo Step 5: pushing current branch...
+git push
+if errorlevel 1 (
+  echo Push failed. Sign in to GitHub or check the remote/branch.
   pause
   exit /b 1
 )
 
 echo.
-echo 3D assets are now in GitHub.
-echo.
+echo Done. All four 3D assets are in GitHub.
 pause
