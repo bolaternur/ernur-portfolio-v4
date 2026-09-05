@@ -1,12 +1,12 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-title ERNUR PORTFOLIO V4
+title ERNUR PORTFOLIO V5
 
 echo.
 echo ===============================================
-echo   ERNUR PORTFOLIO V4
-echo   Keyboard ^> Code ^> Robot ^> Motion
+echo   ERNUR PORTFOLIO V5
+echo   Engineering in Motion
 echo ===============================================
 echo.
 
@@ -25,7 +25,7 @@ if %errorlevel%==0 (
         start "ERNUR SERVER" /min python -m http.server 8080
     ) else (
         echo Python was not found.
-        echo Install Python and run this file again.
+        echo Install Python, or open a terminal here and run: python -m http.server 8080
         pause
         exit /b 1
     )
@@ -35,7 +35,7 @@ timeout /t 2 /nobreak >nul
 start "" "http://localhost:8080"
 
 echo.
-echo Site opened in your browser.
-echo You can keep this window open while using localhost.
+echo V5 opened at http://localhost:8080
+echo Keep the server window open while viewing the site.
 echo.
 pause
