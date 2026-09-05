@@ -7,8 +7,9 @@
   if (!firstVisit || reduced) return;
 
   const start = performance.now();
-  const MIN_DURATION = 3100;
-  const RELEASE_DURATION = 1050;
+  const MIN_DURATION = 3800;
+  const RELEASE_DURATION = 1150;
+  const FAILSAFE = 7000;
   let hideRequested = false;
   let released = false;
 
@@ -25,17 +26,17 @@
       <span data-boot-stage="ready">05 / ready</span>
     </div>
     <div class="boot-v2__corner" aria-hidden="true">system / build 005</div>
-    <div class="boot-v2__index" aria-hidden="true"><strong>Code → system → machine.</strong>Loading the critical scene first. Secondary models stay deferred until they are needed.</div>
+    <div class="boot-v2__index" aria-hidden="true"><strong>Code → system → machine.</strong>Loading the critical scene first. Secondary geometry stays deferred until the story reaches it.</div>
   `);
 
   const phase = boot.querySelector('.boot__phase');
   const stages = [...boot.querySelectorAll('[data-boot-stage]')];
   const schedule = [
     [180, 'boot', 'initializing'],
-    [720, 'type', 'loading type'],
-    [1320, 'geometry', 'resolving geometry'],
-    [2050, 'motion', 'synchronizing motion'],
-    [2720, 'ready', 'preparing scene']
+    [900, 'type', 'resolving type'],
+    [1720, 'geometry', 'loading geometry'],
+    [2600, 'motion', 'synchronizing motion'],
+    [3380, 'ready', 'preparing scene']
   ];
 
   const activate = (key, label) => {
@@ -43,16 +44,6 @@
     if (phase) phase.textContent = label;
   };
   schedule.forEach(([delay, key, label]) => window.setTimeout(() => activate(key, label), delay));
-
-  const observer = new MutationObserver(() => {
-    if (!boot.classList.contains('is-hidden') || released) return;
-    const elapsed = performance.now() - start;
-    if (elapsed < MIN_DURATION) {
-      hideRequested = true;
-      boot.classList.remove('is-hidden');
-    }
-  });
-  observer.observe(boot, { attributes: true, attributeFilter: ['class'] });
 
   function release() {
     if (released) return;
@@ -67,13 +58,19 @@
     }, RELEASE_DURATION);
   }
 
+  const observer = new MutationObserver(() => {
+    if (!boot.classList.contains('is-hidden') || released) return;
+    hideRequested = true;
+    boot.classList.remove('is-hidden');
+    const elapsed = performance.now() - start;
+    if (elapsed >= MIN_DURATION) release();
+  });
+  observer.observe(boot, { attributes: true, attributeFilter: ['class'] });
+
   window.setTimeout(() => {
-    // Existing v5.js requests the hide when real fonts/model/motion are ready.
-    // If a network/model failure prevents that signal, never trap the visitor.
     if (hideRequested) release();
-    else window.setTimeout(release, 1400);
   }, MIN_DURATION);
 
-  // Absolute fail-safe: the intro must never become a blocking screen.
-  window.setTimeout(release, 5200);
+  // Never trap the visitor if a network/model failure behaves unexpectedly.
+  window.setTimeout(release, FAILSAFE);
 })();
