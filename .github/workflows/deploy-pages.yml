@@ -1,4 +1,4 @@
-name: Deploy portfolio to GitHub Pages
+name: Deploy final portfolio to GitHub Pages
 
 on:
   push:
@@ -15,23 +15,64 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout final source
+        uses: actions/checkout@v4
+
+      - name: Verify permanent 3D source assets
+        run: |
+          set -e
+          test -f "source-assets/3209-0001-0007.glb"
+          test -f "source-assets/DECODE Simple Bot.glb"
+          test -f "source-assets/Main Assembly.glb"
+          test -f "source-assets/kicker_insert.glb"
+          echo "All four source GLB files are present."
+
+      - name: Install gltfpack
+        run: |
+          set -e
+          curl -L --fail --retry 3 -o /tmp/gltfpack.zip "https://github.com/zeux/meshoptimizer/releases/download/v1.2/gltfpack-ubuntu.zip"
+          unzip -q /tmp/gltfpack.zip -d /tmp/gltfpack
+          chmod +x /tmp/gltfpack/gltfpack
+          /tmp/gltfpack/gltfpack -h >/dev/null
+
+      - name: Build clean production site
+        run: |
+          set -e
+          rm -rf _site
+          mkdir -p _site
+          cp index.html 404.html v5.css v5.js award.css award.js preloader-v2.css preloader-v2.js _site/
+          cp -R work about lab contact _site/
+          mkdir -p _site/assets/models/study _site/assets/models/robot _site/assets/models/fusion
+
+          # Meshopt compression keeps the download much smaller. -kn/-km preserve
+          # named engineering structure so the DECODE exploded choreography remains intact.
+          /tmp/gltfpack/gltfpack -i "source-assets/3209-0001-0007.glb" -o "_site/assets/models/study/3209-0001-0007.glb" -cc -kn -km
+          /tmp/gltfpack/gltfpack -i "source-assets/DECODE Simple Bot.glb" -o "_site/assets/models/robot/DECODE Simple Bot.glb" -cc -kn -km
+          /tmp/gltfpack/gltfpack -i "source-assets/Main Assembly.glb" -o "_site/assets/models/fusion/Main Assembly.glb" -cc -kn -km
+          /tmp/gltfpack/gltfpack -i "source-assets/kicker_insert.glb" -o "_site/assets/models/fusion/kicker_insert.glb" -cc -kn -km
+
+          touch _site/.nojekyll
+          echo "Production GLB sizes:"
+          du -h _site/assets/models/*/*.glb
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
