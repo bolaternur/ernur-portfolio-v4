@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#eeebe4" />
+  <meta name="description" content="Ernur's first Fusion 360 projects: Main Assembly and Kicker Insert, shown as interactive 3D models." />
+  <title>First Fusion 360 Projects — Ernur</title>
+  <link rel="stylesheet" href="../../v5.css" />
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"}}</script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script><script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+</head>
+<body data-base="../../" data-page="fusion360">
+  <div class="boot" aria-live="polite"><div class="boot__label">FUSION 360 <span class="boot__phase">loading assembly</span></div><div class="boot__track"><span></span></div><span class="boot__value">00</span></div>
+  <div class="route-transition" aria-hidden="true"><span class="route-transition__name">Fusion 360</span><span class="route-transition__meta">CAD / first projects</span></div>
+  <header class="site-nav"><a class="site-nav__mark" href="../../" data-transition-title="home">E<span>/</span>26</a><div class="site-nav__right"><nav class="site-nav__mini"><a href="../" data-transition-title="work">work</a><a href="../../about/" data-transition-title="about">about</a><a href="https://github.com/bolaternur" target="_blank" rel="noreferrer">github ↗</a></nav><button class="site-nav__menu" data-menu-button aria-expanded="false">menu</button></div></header>
+  <aside class="menu-panel"><nav class="menu-panel__links"><a href="../../" data-transition-title="home"><small>00</small>Home</a><a href="../" data-transition-title="work"><small>01</small>Work</a><a href="../../about/" data-transition-title="about"><small>02</small>About</a><a href="../../lab/" data-transition-title="lab"><small>03</small>Lab</a><a href="../../contact/" data-transition-title="contact"><small>04</small>Contact</a></nav><div class="menu-panel__aside">First Fusion 360 projects<br />Main Assembly<br />Kicker Insert</div></aside>
+
+  <main>
+    <section class="page-hero">
+      <div class="page-hero__top"><span>04 / CAD beginnings</span><span>Fusion 360</span></div>
+      <h1 class="display">First<br />Fusion 360<br />projects.</h1>
+      <div class="page-hero__bottom"><p class="lead">Before complex systems, there are first parts, first assemblies and the first time geometry starts making mechanical sense.</p><p class="body-large muted">Main Assembly and Kicker Insert are early projects from my Fusion 360 learning path. I keep them in the portfolio because progress is more interesting when the beginning is visible too.</p></div>
+    </section>
+
+    <section class="case-intro"><div class="case-intro__label">01 / Main Assembly</div><div class="case-intro__copy" data-reveal><p>One of my first Fusion 360 assembly projects.</p><p class="small">Working with an assembly helped me start thinking about components as a system: how individual pieces relate in space, how structure is organized and how CAD becomes more than a single isolated shape.</p></div></section>
+
+    <section class="model-stage">
+      <div class="model-stage__sticky">
+        <canvas data-model="assembly" data-mode="inspection" data-preload="true" aria-hidden="true"></canvas>
+        <div class="model-stage__hud"><span>Main Assembly / GLB</span><span data-model-state>perspective</span></div>
+        <div class="model-stage__rail"><span></span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__bar"><span>Early CAD lesson</span><span>Assembly thinking</span></div>
+      <div class="section__grid"><h2 class="display display--small" data-reveal>Parts become<br />a system.</h2><div class="section__copy body-large" data-reveal><p>This model marks the point where I started thinking spatially about relationships between components rather than treating 3D modeling as only surface creation.</p><p class="muted">The site presents the real GLB as an interactive object so the project can be inspected instead of reduced to one screenshot.</p></div></div>
+    </section>
+
+    <section class="case-intro"><div class="case-intro__label">02 / Kicker Insert</div><div class="case-intro__copy" data-reveal><p>An early individual-part study in Fusion 360.</p><p class="small">Smaller components are useful because they force attention onto proportions, dimensions, fit and the idea that a part exists inside a larger mechanism.</p></div></section>
+
+    <section class="model-stage model-stage--dark">
+      <div class="model-stage__sticky">
+        <canvas data-model="kicker" data-mode="inspection" data-dark="true" aria-hidden="true"></canvas>
+        <div class="model-stage__hud"><span>Kicker Insert / GLB</span><span data-model-state>perspective</span></div>
+        <div class="model-stage__rail"><span></span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__bar"><span>Why keep first projects?</span><span>Learning is part of the work</span></div>
+      <div class="section__grid section__grid--wide"><h2 class="display display--small" data-reveal>Not perfect.<br />Important.</h2><div class="section__copy body-large" data-reveal><p>I don’t want a portfolio that pretends every project began at an advanced level. These models document the beginning of my Fusion 360 work and make later robotics projects easier to understand in context.</p><p class="muted">The goal now is to keep improving mechanical modeling while connecting CAD more deeply to robotics and code.</p></div></div>
+    </section>
+
+    <section class="contact-hero"><p class="eyebrow" style="color:rgba(244,241,234,.48)">Next project</p><h1>Back to<br />code.</h1><div class="contact-hero__actions"><a href="../web/" data-transition-title="Web">Client Web Work ↗</a><a href="../" data-transition-title="work">All work ↗</a><a href="https://github.com/bolaternur" target="_blank" rel="noreferrer">GitHub ↗</a></div></section>
+  </main>
+  <script type="module" src="../../v5.js"></script>
+</body>
+</html>
