@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#11110f" />
+  <meta name="description" content="DECODE Simple Bot — interactive robotics and CAD case study by Ernur." />
+  <title>DECODE Simple Bot — Ernur</title>
+  <link rel="stylesheet" href="../../v5.css" />
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"}}</script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script><script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+</head>
+<body data-base="../../" data-page="decode" data-robot-preload="true">
+  <div class="boot" aria-live="polite"><div class="boot__label">DECODE / ROBOT <span class="boot__phase">loading robot</span></div><div class="boot__track"><span></span></div><span class="boot__value">00</span></div>
+  <div class="route-transition" aria-hidden="true"><span class="route-transition__name">DECODE</span><span class="route-transition__meta">robotics / case study</span></div>
+  <header class="site-nav"><a class="site-nav__mark" href="../../" data-transition-title="home">E<span>/</span>26</a><div class="site-nav__right"><nav class="site-nav__mini"><a href="../" data-transition-title="work">work</a><a href="../../about/" data-transition-title="about">about</a><a href="https://github.com/bolaternur" target="_blank" rel="noreferrer">github ↗</a></nav><button class="site-nav__menu" data-menu-button aria-expanded="false">menu</button></div></header>
+  <aside class="menu-panel"><nav class="menu-panel__links"><a href="../../" data-transition-title="home"><small>00</small>Home</a><a href="../" data-transition-title="work"><small>01</small>Work</a><a href="../../about/" data-transition-title="about"><small>02</small>About</a><a href="../../lab/" data-transition-title="lab"><small>03</small>Lab</a><a href="../../contact/" data-transition-title="contact"><small>04</small>Contact</a></nav><div class="menu-panel__aside">DECODE Simple Bot<br />inspect → separate<br />understand → rebuild</div></aside>
+
+  <main>
+    <section class="page-hero page-hero--dark">
+      <div class="page-hero__top"><span>02 / Robotics + CAD</span><span>Interactive machine study</span></div>
+      <h1 class="display">DECODE<br />Simple Bot.</h1>
+      <div class="page-hero__bottom"><p class="lead">A robot is easier to understand when the interface lets you take it apart.</p><p class="body-large" style="color:rgba(244,241,234,.56)">This case study keeps the real CAD hierarchy visible and turns scroll into a four-part inspection sequence.</p></div>
+    </section>
+
+    <section class="metrics"><div class="metric"><strong>1041</strong><span>nodes</span></div><div class="metric"><strong>108</strong><span>meshes</span></div><div class="metric"><strong>17</strong><span>materials</span></div><div class="metric"><strong>4</strong><span>interaction phases</span></div></section>
+
+    <section class="case-intro"><div class="case-intro__label">Interaction idea</div><div class="case-intro__copy" data-reveal><p>Instead of showing the robot as a static render, I wanted the model itself to explain how it is built.</p><p class="small">The sequence starts as an inspection, separates parts outward from the robot’s center, pauses long enough to read the structure, then returns every mesh to its original position.</p></div></section>
+
+    <section class="robot">
+      <div class="robot__sticky">
+        <canvas id="robot-canvas" aria-hidden="true"></canvas>
+        <div class="robot-fallback" aria-hidden="true"><span></span></div>
+        <div class="robot__index">DECODE / real CAD hierarchy</div>
+        <div class="robot__steps" aria-hidden="true"><span class="robot-step is-active">01&nbsp;&nbsp;inspect</span><span class="robot-step">02&nbsp;&nbsp;separate</span><span class="robot-step">03&nbsp;&nbsp;understand</span><span class="robot-step">04&nbsp;&nbsp;rebuild</span></div>
+        <div class="robot__phase">inspect</div>
+        <div class="part part--motor"><span>drive</span><strong>NeveRest Hex Motor</strong></div>
+        <div class="part part--encoder"><span>feedback</span><strong>Encoder assembly</strong></div>
+        <div class="part part--chassis"><span>structure</span><strong>Chassis</strong></div>
+        <div class="robot__progress"><span></span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__bar"><span>How it works</span><span>Hierarchy-aware 3D motion</span></div>
+      <div class="section__grid section__grid--wide"><h2 class="display display--small" data-reveal>Move the parts.<br />Preserve the<br />machine.</h2><div class="section__copy body-large" data-reveal><p>Each mesh keeps its original position. During the separation phase, a direction is derived from the robot center and the part moves outward while the original assembly state remains recoverable.</p><p class="muted">That means the animation is not a destructive edit and the rebuild phase can return the actual model to its initial structure.</p></div></div>
+    </section>
+
+    <section class="section">
+      <div class="section__bar"><span>What the model contains</span><span>Mechanical detail</span></div>
+      <div class="tech-grid" data-reveal-group>
+        <div class="tech-card"><span>Drive</span><h3>Motors + gearboxes</h3><p>Named motor and gearbox components make the machine readable as a system, not one merged object.</p></div>
+        <div class="tech-card"><span>Motion</span><h3>Wheels + shafts</h3><p>Wheel, shaft and bearing geometry gives the exploded view useful mechanical depth.</p></div>
+        <div class="tech-card"><span>Feedback</span><h3>Encoder assembly</h3><p>Encoder-related parts create a clear story about sensing and control.</p></div>
+        <div class="tech-card"><span>Structure</span><h3>Plates + mounts</h3><p>Chassis elements and mounts help explain how the whole machine is physically organized.</p></div>
+        <div class="tech-card"><span>Mechanism</span><h3>Intake elements</h3><p>Intake and launcher-related parts make the model feel like a functional robot rather than a generic 3D asset.</p></div>
+        <div class="tech-card"><span>Interface</span><h3>Scroll as inspection</h3><p>The page turns model hierarchy into an understandable four-step narrative.</p></div>
+      </div>
+    </section>
+
+    <section class="statement-band"><p data-reveal>The goal isn’t to make a robot spin. It’s to make its <span class="accent">structure understandable.</span></p></section>
+
+    <section class="section">
+      <div class="section__bar"><span>Direction</span><span>Robotics</span></div>
+      <div class="section__grid"><h2 class="display display--small" data-reveal>Software meets<br />mechanics.</h2><div class="section__copy body-large" data-reveal><p>Robotics is where several of my interests meet: programming, CAD, physical assembly and the feedback loop between an idea and a real mechanism.</p><p class="muted">My next goals include deeper competition robotics work and continuing to improve both mechanical design and software control.</p></div></div>
+    </section>
+
+    <section class="contact-hero"><p class="eyebrow" style="color:rgba(244,241,234,.48)">Next project</p><h1>Change<br />the view.</h1><div class="contact-hero__actions"><a href="../3209/" data-transition-title="3209">3209 Mechanical Study ↗</a><a href="../" data-transition-title="work">All work ↗</a><a href="https://github.com/bolaternur" target="_blank" rel="noreferrer">GitHub ↗</a></div></section>
+  </main>
+  <script type="module" src="../../v5.js"></script>
+</body>
+</html>
