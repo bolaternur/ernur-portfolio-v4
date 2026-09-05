@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import Lenis from 'https://cdn.jsdelivr.net/npm/lenis@1.3.26/+esm';
 
 const gsap = window.gsap;
@@ -251,6 +252,7 @@ function makeFallback(stage, dark = false) {
 }
 
 const gltfLoader = new GLTFLoader();
+gltfLoader.setMeshoptDecoder(MeshoptDecoder);
 const MODEL_PATHS = {
   study: [
     asset('assets/models/study/3209-0001-0007.glb'),
@@ -313,7 +315,6 @@ function initModelCanvas(canvas) {
       console.warn(`Model ${key} unavailable`, error);
       root = makeFallback(stage, dark);
       fit = fitModel(root, stage.camera, mobile ? 1.62 : 1.28);
-      canvas.dataset.loaded = 'fallback';
     }
 
     if (mode === 'hero') {
