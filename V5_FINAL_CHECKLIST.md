@@ -1,55 +1,66 @@
-# V5 FINAL CHECKLIST
+# ERNUR PORTFOLIO — FINAL V5 CANDIDATE
+
+## What is included
+
+- Multi-page portfolio: Home, Work, TraceLab, DECODE, 3209, Fusion 360, Web, About, Lab, Contact, 404.
+- 3.8s first-visit cinematic preloader tied to the critical asset loader, with a 7s fail-safe.
+- Global GSAP + ScrollTrigger + Lenis motion clock.
+- Award Layer: masked word reveals, scroll progress, project hover preview, FLIP-like project expansion, sticky-grid-inspired work motion, menu clip choreography, technical model reticles, TraceLab evidence pulses, magnetic links, section assembly lines and responsive/reduced-motion fallbacks.
+- 3209 hero camera follows an authored Catmull-Rom camera path instead of a plain rotate-only presentation.
+- DECODE `inspect → separate → understand → rebuild` choreography is preserved.
+- Four GLB slots: 3209, DECODE Simple Bot, Main Assembly and Kicker Insert.
 
 ## Local launch
 
-1. Download the `v5-rebuild` branch ZIP.
-2. Extract it.
-3. Keep these files in Downloads/Desktop/Documents:
-   - `DECODE Simple Bot(1).glb`
+1. Extract the package.
+2. Keep these real model files in Downloads, Desktop or Documents:
+   - `DECODE Simple Bot(1).glb` (or `DECODE Simple Bot.glb`)
    - `3209-0001-0007.glb`
    - `Main Assembly.glb`
    - `kicker_insert.glb`
-4. Run `START_LOCALHOST.bat`.
-5. If Windows blocks it:
+3. Run `START_LOCALHOST.bat`.
+4. If Windows Smart App Control blocks the BAT, open PowerShell in the extracted folder and run:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\setup-assets.ps1
 py -m http.server 8080
 ```
 
-Open `http://localhost:8080`.
+5. Open `http://localhost:8080`.
 
-## Screenshots needed for final art-direction pass
+`setup-assets.ps1` copies the four models into the expected `assets/models/...` paths automatically.
 
-- Homepage hero with 3209 loaded.
-- Homepage TraceLab / selected-work area.
-- DECODE inspect state.
-- DECODE full separate / understand state.
-- 3209 near-orthographic state.
-- Main Assembly scene.
-- Kicker Insert scene.
-- TraceLab Evidence Trace section.
-- About / AP section.
-- Lab / cube section.
-- Mobile homepage.
-- Mobile DECODE or TraceLab page.
+## First-load replay
 
-## Do not merge yet if
+The long cinematic preloader runs only on the first visit per browser tab/session. To replay it from DevTools Console:
 
-- any real GLB is missing;
-- a model is cropped or too small;
-- scroll feels too long/short;
-- page transition blocks navigation;
-- mobile text overlaps;
-- the loader sits on-screen after the model is ready;
-- Lighthouse performance is poor because of unoptimized GLBs.
+```js
+sessionStorage.removeItem('ernur-v5-seen');
+location.reload();
+```
 
-## Production pass after visual QA
+## Final visual QA before merging to main
 
-- optimize GLBs with gltfpack / meshoptimizer;
-- preserve DECODE named-node hierarchy;
-- tune DPR and lazy-load boundaries;
-- create final OpenGraph image;
-- cross-browser QA;
-- Lighthouse/Core Web Vitals;
-- merge `v5-rebuild` → `main` only after those checks.
+Check with the real GLBs installed:
+
+- Homepage hero: model scale, crop and lighting.
+- Signal chapter: CODE → TRACE → CAD → MOTION.
+- Selected-work hover preview and project expansion transition.
+- TraceLab Evidence Trace animation.
+- DECODE inspect state and full separate/understand state.
+- 3209 inspection / near-orthographic state.
+- Main Assembly and Kicker Insert.
+- Menu open + close.
+- Mobile Home + DECODE/TraceLab.
+- Reduced-motion mode.
+
+## Production checks before an Awwwards submission
+
+- Compress/optimize GLBs with gltfpack / meshoptimizer while preserving DECODE's required hierarchy.
+- Lighthouse / Core Web Vitals pass.
+- Safari, Chrome and Firefox pass.
+- iOS/Android touch pass.
+- Final OpenGraph image, favicon, canonical metadata and sitemap.
+- Only merge `v5-rebuild → main` after the real-model visual pass.
+
+No award can be guaranteed. The implementation is designed to target award-level design, creativity, usability, content and developer-quality criteria without sacrificing accessibility or performance.
