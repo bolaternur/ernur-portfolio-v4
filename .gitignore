@@ -1,0 +1,7 @@
+# local 3D assets
+assets/models/robot/*.glb
+assets/models/study/*.glb
+
+# OS
+.DS_Store
+Thumbs.db
