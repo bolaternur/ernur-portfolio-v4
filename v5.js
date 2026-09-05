@@ -319,6 +319,13 @@ function initModelCanvas(canvas) {
     if (mode === 'hero') {
       root.rotation.set(-.08, -.62, .025);
       root.position.x = mobile ? 0 : fit.max * .12;
+      const startCamera = stage.camera.position.clone();
+      const heroCurve = new THREE.CatmullRomCurve3([
+        startCamera.clone(),
+        new THREE.Vector3(startCamera.x * .94, startCamera.y * 1.04, startCamera.z * .98),
+        new THREE.Vector3(startCamera.x * .78, startCamera.y * .86, startCamera.z * .94),
+        new THREE.Vector3(startCamera.x * .61, startCamera.y * .68, startCamera.z * .90)
+      ], false, 'catmullrom', .5);
       stage.onFrame(() => {
         if (reducedMotion) return;
         pointerSmooth.x += (pointer.x - pointerSmooth.x) * .025;
@@ -335,11 +342,14 @@ function initModelCanvas(canvas) {
           scrub: true,
           onUpdate(self) {
             const p = self.progress;
+            const point = heroCurve.getPoint(THREE.MathUtils.clamp(p, 0, 1));
+            stage.camera.position.copy(point);
+            stage.camera.lookAt(0, 0, 0);
             root.rotation.y = -.62 + p * .72;
             root.rotation.x = -.08 - p * .05;
-            root.position.x = (mobile ? 0 : fit.max * .12) + p * fit.max * .06;
-            root.position.y = p * fit.max * .02;
-            root.scale.setScalar(1 + p * .06);
+            root.position.x = (mobile ? 0 : fit.max * .12) + p * fit.max * .05;
+            root.position.y = p * fit.max * .018;
+            root.scale.setScalar(1 + p * .045);
             gsap?.set('.home-hero__copy', { y: -p * 70, opacity: 1 - p * .92 });
           }
         });
@@ -636,3 +646,4 @@ async function init() {
 }
 
 init();
+import('./award.js').catch((error) => console.warn('Award layer unavailable', error));
