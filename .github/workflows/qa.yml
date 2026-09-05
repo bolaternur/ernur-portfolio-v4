@@ -1,0 +1,53 @@
+name: Portfolio QA
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  static-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JavaScript syntax
+        run: |
+          node --check v5.js
+          node --check award.js
+          node --check preloader-v2.js
+
+      - name: Required production tree
+        shell: python
+        run: |
+          from pathlib import Path
+          required = [
+              'index.html', '404.html', 'v5.css', 'v5.js', 'award.css', 'award.js',
+              'preloader-v2.css', 'preloader-v2.js',
+              'work/index.html', 'work/tracelab/index.html', 'work/decode/index.html',
+              'work/3209/index.html', 'work/fusion360/index.html', 'work/web/index.html',
+              'about/index.html', 'lab/index.html', 'contact/index.html',
+          ]
+          missing = [p for p in required if not Path(p).exists()]
+          if missing:
+              raise SystemExit('Missing production files: ' + ', '.join(missing))
+          print('Production tree: OK')
+
+      - name: Award runtime wired
+        run: |
+          grep -q "import('./award.js')" v5.js
+          grep -q "MeshoptDecoder" v5.js
+          echo "Award layer + Meshopt decoder: OK"
+
+      - name: Localhost route smoke
+        run: |
+          python3 -m http.server 8080 >/tmp/ernur-http.log 2>&1 &
+          SERVER_PID=$!
+          sleep 2
+          for route in / /work/ /work/tracelab/ /work/decode/ /work/3209/ /work/fusion360/ /work/web/ /about/ /lab/ /contact/ /404.html; do
+            curl --fail --silent --show-error "http://127.0.0.1:8080${route}" >/dev/null
+          done
+          kill $SERVER_PID
+          echo "Localhost route smoke: OK"
