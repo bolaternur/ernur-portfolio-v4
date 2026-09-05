@@ -36,7 +36,7 @@ jobs:
           curl -L --fail --retry 3 -o /tmp/gltfpack.zip "https://github.com/zeux/meshoptimizer/releases/download/v1.2/gltfpack-ubuntu.zip"
           unzip -q /tmp/gltfpack.zip -d /tmp/gltfpack
           chmod +x /tmp/gltfpack/gltfpack
-          /tmp/gltfpack/gltfpack -h >/dev/null
+          /tmp/gltfpack/gltfpack -v
 
       - name: Build clean production site
         run: |
