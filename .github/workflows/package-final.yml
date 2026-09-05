@@ -3,6 +3,8 @@ name: Package Final Portfolio
 on:
   push:
     branches: [v5-rebuild]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
