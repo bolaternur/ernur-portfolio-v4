@@ -47,10 +47,14 @@ jobs:
           cp -R work about lab contact _site/
           mkdir -p _site/assets/models/study _site/assets/models/robot _site/assets/models/fusion
 
-          /tmp/gltfpack/gltfpack -i "source-assets/3209-0001-0007.glb" -o "_site/assets/models/study/3209-0001-0007.glb" -cc -kn -km
-          /tmp/gltfpack/gltfpack -i "source-assets/DECODE Simple Bot.glb" -o "_site/assets/models/robot/DECODE Simple Bot.glb" -cc -kn -km
-          /tmp/gltfpack/gltfpack -i "source-assets/Main Assembly.glb" -o "_site/assets/models/fusion/Main Assembly.glb" -cc -kn -km
-          /tmp/gltfpack/gltfpack -i "source-assets/kicker_insert.glb" -o "_site/assets/models/fusion/kicker_insert.glb" -cc -kn -km
+          # Keep gltfpack's geometry/scene optimization, but do NOT use EXT_meshopt_compression
+          # for the public files. This makes the four GLBs load reliably in every browser and
+          # when cached by GitHub Pages, while -kn/-km preserve the named engineering hierarchy
+          # used by the DECODE inspect -> separate -> understand -> rebuild choreography.
+          /tmp/gltfpack/gltfpack -i "source-assets/3209-0001-0007.glb" -o "_site/assets/models/study/3209-0001-0007.glb" -kn -km
+          /tmp/gltfpack/gltfpack -i "source-assets/DECODE Simple Bot.glb" -o "_site/assets/models/robot/DECODE Simple Bot.glb" -kn -km
+          /tmp/gltfpack/gltfpack -i "source-assets/Main Assembly.glb" -o "_site/assets/models/fusion/Main Assembly.glb" -kn -km
+          /tmp/gltfpack/gltfpack -i "source-assets/kicker_insert.glb" -o "_site/assets/models/fusion/kicker_insert.glb" -kn -km
 
           touch _site/.nojekyll
           echo "Production GLB sizes:"
