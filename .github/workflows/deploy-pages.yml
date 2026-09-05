@@ -47,8 +47,6 @@ jobs:
           cp -R work about lab contact _site/
           mkdir -p _site/assets/models/study _site/assets/models/robot _site/assets/models/fusion
 
-          # Meshopt compression keeps the download much smaller. -kn/-km preserve
-          # named engineering structure so the DECODE exploded choreography remains intact.
           /tmp/gltfpack/gltfpack -i "source-assets/3209-0001-0007.glb" -o "_site/assets/models/study/3209-0001-0007.glb" -cc -kn -km
           /tmp/gltfpack/gltfpack -i "source-assets/DECODE Simple Bot.glb" -o "_site/assets/models/robot/DECODE Simple Bot.glb" -cc -kn -km
           /tmp/gltfpack/gltfpack -i "source-assets/Main Assembly.glb" -o "_site/assets/models/fusion/Main Assembly.glb" -cc -kn -km
@@ -60,6 +58,8 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
