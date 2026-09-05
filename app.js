@@ -1,353 +1,248 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+import Lenis from 'https://cdn.jsdelivr.net/npm/lenis@1.3.26/+esm';
 
 const gsap = window.gsap;
 const ScrollTrigger = window.ScrollTrigger;
 if (gsap && ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
 
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const mobile = window.matchMedia('(max-width: 820px)').matches;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const mobile = window.matchMedia('(max-width: 900px)').matches;
+const saveData = navigator.connection?.saveData === true;
 
+/* ------------------------------------------------------------
+   Smooth scroll — one timing system for DOM + WebGL
+------------------------------------------------------------ */
+let lenis = null;
+if (!reducedMotion) {
+  lenis = new Lenis({ duration: 1.05, wheelMultiplier: .92, smoothWheel: true });
+  lenis.on('scroll', () => ScrollTrigger?.update());
+  gsap?.ticker.add((time) => lenis.raf(time * 1000));
+  gsap?.ticker.lagSmoothing(0);
+}
+
+/* ------------------------------------------------------------
+   Loader
+------------------------------------------------------------ */
 const boot = document.querySelector('.boot');
-const bootBar = document.querySelector('.boot__bar span');
+const bootTrack = document.querySelector('.boot__track span');
 const bootValue = document.querySelector('.boot__value');
-
-function setBoot(v){
-  const p = THREE.MathUtils.clamp(v,0,1);
-  if (bootBar) bootBar.style.transform = `scaleX(${p})`;
-  if (bootValue) bootValue.textContent = String(Math.round(p*100)).padStart(2,'0');
+function setBoot(v) {
+  const p = THREE.MathUtils.clamp(v, 0, 1);
+  if (bootTrack) bootTrack.style.transform = `scaleX(${p})`;
+  if (bootValue) bootValue.textContent = String(Math.round(p * 100)).padStart(2, '0');
 }
-function hideBoot(){
+function hideBoot() {
   setBoot(1);
-  setTimeout(()=>boot?.classList.add('is-hidden'),240);
+  setTimeout(() => boot?.classList.add('is-hidden'), 220);
 }
 
-function createStage(canvas,{alpha=true}={}){
+/* ------------------------------------------------------------
+   Three stage
+------------------------------------------------------------ */
+function createStage(canvas, { tone = 1.03, dark = false } = {}) {
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(30,1,.01,10000);
-  const renderer = new THREE.WebGLRenderer({canvas,antialias:true,alpha,powerPreference:'high-performance'});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.15:1.7));
+  const camera = new THREE.PerspectiveCamera(30, 1, .01, 100000);
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.15 : 1.65));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = tone;
 
-  const hemi = new THREE.HemisphereLight(0xffffff,0x151515,2.25);
+  const hemi = new THREE.HemisphereLight(dark ? 0xf5f1e8 : 0xffffff, dark ? 0x11110f : 0x77756e, dark ? 2.2 : 1.85);
   scene.add(hemi);
-  const key = new THREE.DirectionalLight(0xffffff,4.2);
-  key.position.set(4,6,5);
+  const key = new THREE.DirectionalLight(0xffffff, dark ? 4.6 : 3.9);
+  key.position.set(4.5, 6.5, 5);
   scene.add(key);
-  const rim = new THREE.DirectionalLight(0x8ebfff,2.2);
-  rim.position.set(-4,1,-4);
+  const fill = new THREE.DirectionalLight(dark ? 0xbfc7d2 : 0xd7d3c8, dark ? 2.1 : 1.35);
+  fill.position.set(-5, 2, -4);
+  scene.add(fill);
+  const rim = new THREE.DirectionalLight(0xe2a488, dark ? 1.45 : .72);
+  rim.position.set(3, -2, -4);
   scene.add(rim);
-  const warm = new THREE.DirectionalLight(0xff8c7b,1.1);
-  warm.position.set(2,-2,3);
-  scene.add(warm);
 
-  function resize(){
-    const r = canvas.getBoundingClientRect();
-    const w = Math.max(1,r.width), h = Math.max(1,r.height);
-    renderer.setSize(w,h,false);
-    camera.aspect = w/h;
+  let visible = true;
+  new IntersectionObserver((entries) => { visible = entries[0]?.isIntersecting ?? true; }, { rootMargin: '500px' }).observe(canvas);
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(1, rect.width), h = Math.max(1, rect.height);
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
   new ResizeObserver(resize).observe(canvas);
   resize();
 
-  let visible = true;
-  new IntersectionObserver(entries=>{visible = entries[0]?.isIntersecting ?? true},{rootMargin:'300px'}).observe(canvas);
-  const ticks=[];
-  function frame(t){
+  const ticks = [];
+  function frame(t) {
     requestAnimationFrame(frame);
-    if(!visible) return;
-    ticks.forEach(fn=>fn(t));
-    renderer.render(scene,camera);
+    if (!visible) return;
+    ticks.forEach((fn) => fn(t));
+    renderer.render(scene, camera);
   }
   requestAnimationFrame(frame);
-  return {scene,camera,renderer,onFrame:fn=>ticks.push(fn)};
+  return { scene, camera, renderer, lights: { key, fill, rim }, onFrame: (fn) => ticks.push(fn) };
 }
 
-function normalizeObject(root,camera,mult=1.3){
+function cloneMaterials(root) {
+  root.traverse((o) => {
+    if (!o.isMesh || !o.material) return;
+    o.material = Array.isArray(o.material) ? o.material.map((m) => m.clone()) : o.material.clone();
+    o.frustumCulled = true;
+  });
+}
+
+function fitModel(root, camera, multiplier = 1.3) {
   root.updateMatrixWorld(true);
   const box = new THREE.Box3().setFromObject(root);
   const center = box.getCenter(new THREE.Vector3());
   root.position.sub(center);
   root.updateMatrixWorld(true);
-  const size = new THREE.Box3().setFromObject(root).getSize(new THREE.Vector3());
-  const max = Math.max(size.x,size.y,size.z) || 1;
+  const normalized = new THREE.Box3().setFromObject(root);
+  const size = normalized.getSize(new THREE.Vector3());
+  const max = Math.max(size.x, size.y, size.z) || 1;
   const fov = THREE.MathUtils.degToRad(camera.fov);
-  const dist = (max/(2*Math.tan(fov/2)))*mult;
-  camera.position.set(dist*.78,dist*.45,dist);
-  camera.near = Math.max(.001,dist/1000);
-  camera.far = dist*50;
-  camera.lookAt(0,0,0);
+  const dist = (max / (2 * Math.tan(fov / 2))) * multiplier;
+  camera.position.set(dist * .72, dist * .34, dist);
+  camera.near = Math.max(.001, dist / 1000);
+  camera.far = dist * 60;
+  camera.lookAt(0, 0, 0);
   camera.updateProjectionMatrix();
-  return {max,dist};
+  return { max, dist, size };
 }
 
-function cloneMaterials(root){
-  root.traverse(o=>{
-    if(!o.isMesh) return;
-    if(Array.isArray(o.material)) o.material=o.material.map(m=>m.clone());
-    else if(o.material) o.material=o.material.clone();
-  });
+const loader = new GLTFLoader();
+async function loadAny(paths, onProgress) {
+  let lastError;
+  for (const path of paths) {
+    try {
+      return await loader.loadAsync(path, onProgress);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError || new Error('No model path resolved');
 }
 
-/* ------------------------------------------------------------------
-   KEYBOARD — real OBJ when available, procedural fallback otherwise
-------------------------------------------------------------------- */
-
-const keyboardCanvas = document.getElementById('keyboard-canvas');
-const keyboardStage = createStage(keyboardCanvas);
-keyboardStage.camera.fov = 28;
-keyboardStage.camera.updateProjectionMatrix();
-
-const keyboardRoot = new THREE.Group();
-keyboardStage.scene.add(keyboardRoot);
-
-const keyMap = new Map();
-const activeKeys = new Set();
-const typed = document.getElementById('typed-text');
-const typedBuffer=[];
-const palette = [0xff2a2a,0x2a7fff,0x2aff2a];
-
-const qwertyRows = [
-  ['1','2','3','4','5','6','7','8','9','0'],
-  ['Q','W','E','R','T','Y','U','I','O','P'],
-  ['A','S','D','F','G','H','J','K','L'],
-  ['Z','X','C','V','B','N','M'],
-  ['SPACE']
+const STUDY_PATHS = [
+  './assets/models/study/3209-0001-0007.glb',
+  './assets/models/3209-0001-0007.glb',
+  './3209-0001-0007.glb'
+];
+const ROBOT_PATHS = [
+  './assets/models/robot/DECODE Simple Bot.glb',
+  './assets/models/robot/DECODE Simple Bot(1).glb',
+  './DECODE Simple Bot.glb',
+  './DECODE Simple Bot(1).glb'
 ];
 
-function makeProceduralKeyboard(){
-  const deck = new THREE.Mesh(
-    new THREE.BoxGeometry(11.8,.42,4.6),
-    new THREE.MeshStandardMaterial({color:0x141516,roughness:.52,metalness:.55})
-  );
-  deck.position.y=-.22;
-  keyboardRoot.add(deck);
+/* ------------------------------------------------------------
+   Study model — HERO
+------------------------------------------------------------ */
+const studyCanvas = document.getElementById('study-canvas');
+const studyStage = createStage(studyCanvas, { tone: 1.02, dark: false });
+let studySource = null;
+let studyHero = null;
+let studyHeroFit = null;
 
-  const capMat = new THREE.MeshStandardMaterial({color:0x232527,roughness:.56,metalness:.12});
-  const edgeMat = new THREE.MeshStandardMaterial({color:0x0a0b0c,roughness:.5,metalness:.35});
+const pointer = { x: 0, y: 0 };
+const pointerSmooth = { x: 0, y: 0 };
+window.addEventListener('pointermove', (e) => {
+  pointer.x = e.clientX / innerWidth * 2 - 1;
+  pointer.y = e.clientY / innerHeight * 2 - 1;
+}, { passive: true });
 
-  const rowZ=[-1.55,-.55,.45,1.45,2.03];
-  const widths=[1,1,1,1,4.5];
-  const offsets=[-4.92,-4.92,-4.4,-3.4,-2.15];
-
-  qwertyRows.forEach((row,ri)=>{
-    row.forEach((label,ci)=>{
-      const w=widths[ri];
-      const group=new THREE.Group();
-      const base=new THREE.Mesh(new THREE.BoxGeometry(w*.94,.22,.82),edgeMat.clone());
-      base.position.y=.09;
-      group.add(base);
-      const cap=new THREE.Mesh(new THREE.BoxGeometry(w*.88,.22,.76),capMat.clone());
-      cap.position.y=.25;
-      cap.userData.baseY=.25;
-      group.add(cap);
-      group.position.set(offsets[ri]+ci*1.08,0,rowZ[ri]);
-      group.userData.keyLabel=label;
-      group.userData.cap=cap;
-      keyMap.set(label,group);
-      keyboardRoot.add(group);
+async function loadStudyHero() {
+  try {
+    const gltf = await loadAny(STUDY_PATHS, (e) => {
+      if (e.total) setBoot(.08 + .68 * (e.loaded / e.total));
     });
-  });
-
-  keyboardRoot.rotation.set(-.18,.38,-.08);
-  keyboardRoot.scale.setScalar(.9);
-  keyboardStage.camera.position.set(0,6.8,12.8);
-  keyboardStage.camera.lookAt(0,0,0);
-}
-
-function assignRealModelKeys(root){
-  const meshes=[];
-  root.updateMatrixWorld(true);
-  const whole = new THREE.Box3().setFromObject(root);
-  const wholeSize = whole.getSize(new THREE.Vector3());
-  root.traverse((o)=>{
-    if(!o.isMesh) return;
-    const b = new THREE.Box3().setFromObject(o);
-    const s = b.getSize(new THREE.Vector3());
-    if(s.x < wholeSize.x*.33 && s.z < wholeSize.z*.45 && s.y < wholeSize.y*.65) {
-      const c=b.getCenter(new THREE.Vector3());
-      meshes.push({o,c,s});
-    }
-  });
-
-  if(meshes.length < 20) return false;
-  meshes.sort((a,b)=> a.c.z===b.c.z ? a.c.x-b.c.x : a.c.z-b.c.z);
-  const labels=qwertyRows.flat();
-  const chosen=meshes.slice(0,labels.length);
-  chosen.forEach((item,i)=>{
-    const group=item.o;
-    group.userData.baseY=group.position.y;
-    group.userData.realKey=true;
-    keyMap.set(labels[i],group);
-  });
-  return true;
-}
-
-async function loadKeyboardModel(){
-  try{
-    const mtlLoader = new MTLLoader();
-    const materials = await mtlLoader.loadAsync('./assets/models/keyboard/lowprofilemechanicalkeyboard.mtl');
-    materials.preload();
-    const objLoader = new OBJLoader();
-    objLoader.setMaterials(materials);
-    const obj = await objLoader.loadAsync('./assets/models/keyboard/lowprofilemechanicalkeyboard.obj');
-    cloneMaterials(obj);
-    keyboardRoot.add(obj);
-    const fit=normalizeObject(obj,keyboardStage.camera,mobile?1.52:1.16);
-    obj.rotation.set(-.12,.22,0);
-    const segmented=assignRealModelKeys(obj);
-    if(!segmented){
-      // Keep the authentic model as hero, add invisible tactile grid above it.
-      makeVirtualKeyLayer(fit.max);
-    }
+    studySource = gltf.scene;
+    studyHero = studySource.clone(true);
+    cloneMaterials(studyHero);
+    studyStage.scene.add(studyHero);
+    studyHeroFit = fitModel(studyHero, studyStage.camera, mobile ? 1.58 : 1.22);
+    studyHero.rotation.set(-.08, -.58, .025);
+    studyHero.position.x = mobile ? 0 : studyHeroFit.max * .12;
     return true;
-  } catch(err){
-    console.warn('Keyboard asset not found; using procedural keyboard.',err);
-    makeProceduralKeyboard();
+  } catch (error) {
+    console.warn('Study GLB missing:', error);
+    makeHeroFallback();
     return false;
   }
 }
 
-function makeVirtualKeyLayer(max){
-  const group=new THREE.Group();
-  const mat=new THREE.MeshStandardMaterial({color:0x242628,roughness:.48,transparent:true,opacity:.01});
-  const rows=[10,10,9,7,1];
-  const rowZ=[-1.45,-.48,.49,1.46,2.0];
-  const offsets=[-4.9,-4.9,-4.36,-3.36,-2.2];
-  qwertyRows.forEach((row,ri)=>row.forEach((label,ci)=>{
-    const w=ri===4?4.4:.9;
-    const cap=new THREE.Mesh(new THREE.BoxGeometry(w,.10,.72),mat.clone());
-    cap.position.set(offsets[ri]+ci*1.08,.65,rowZ[ri]);
-    cap.userData.baseY=.65;
-    cap.userData.virtual=true;
-    keyMap.set(label,cap);
-    group.add(cap);
-  }));
-  group.scale.setScalar(max/12.5);
-  keyboardRoot.add(group);
+function makeHeroFallback() {
+  const group = new THREE.Group();
+  const mat = new THREE.MeshStandardMaterial({ color: 0x8f918d, metalness: .78, roughness: .28 });
+  const core = new THREE.Mesh(new THREE.BoxGeometry(4.6, 1.2, 2.8), mat);
+  const rail = new THREE.Mesh(new THREE.BoxGeometry(5.5, .28, 1.65), mat.clone());
+  rail.position.y = -.72;
+  group.add(core, rail);
+  studyStage.scene.add(group);
+  studyHero = group;
+  studyHeroFit = fitModel(group, studyStage.camera, mobile ? 1.6 : 1.25);
+  group.rotation.y = -.55;
 }
 
-function keyLabelFromEvent(e){
-  if(e.code==='Space') return 'SPACE';
-  if(e.key.length===1) return e.key.toUpperCase();
-  return null;
-}
-
-function pressKey(label,down=true){
-  const target=keyMap.get(label);
-  if(!target) return;
-
-  if(target.userData.realKey){
-    const base=target.userData.baseY ?? target.position.y;
-    gsap?.to(target.position,{y:base+(down?-.035:0),duration:down?.08:.18,ease:down?'power2.out':'power3.out'});
-    const mats=[];
-    target.traverse(o=>{if(o.isMesh && o.material)mats.push(...(Array.isArray(o.material)?o.material:[o.material]));});
-    mats.forEach((m,i)=>{
-      if('emissive' in m){
-        m.emissive = new THREE.Color(palette[(label.charCodeAt(0)+i)%palette.length]);
-        gsap?.to(m.emissive,{r:down?m.emissive.r*.25:0,g:down?m.emissive.g*.25:0,b:down?m.emissive.b*.25:0,duration:down?.08:.3});
-      }
-    });
-    return;
-  }
-
-  const cap=target.userData.cap || target;
-  const base=cap.userData.baseY ?? cap.position.y;
-  gsap?.to(cap.position,{y:base+(down?-.16:0),duration:down?.07:.2,ease:down?'power2.out':'power3.out'});
-  if(cap.material){
-    cap.material.transparent=true;
-    gsap?.to(cap.material,{opacity:down?.58:(cap.userData.virtual?.01:1),duration:down?.05:.25});
-    if('emissive' in cap.material){
-      const col=new THREE.Color(palette[(label.charCodeAt(0)||1)%3]);
-      cap.material.emissive.copy(col);
-      cap.material.emissiveIntensity=down?.75:0;
-    }
-  }
-}
-
-window.addEventListener('keydown',e=>{
-  const label=keyLabelFromEvent(e);
-  if(!label || activeKeys.has(label)) return;
-  activeKeys.add(label);
-  pressKey(label,true);
-  if(label==='SPACE') typedBuffer.push(' '); else if(label.length===1) typedBuffer.push(label.toLowerCase());
-  if(typedBuffer.length>28) typedBuffer.splice(0,typedBuffer.length-28);
-  if(typed) typed.textContent=typedBuffer.join('');
-  gsap?.fromTo('.signal-dot',{scale:1},{scale:2.4,duration:.12,yoyo:true,repeat:1,ease:'power2.out'});
-});
-window.addEventListener('keyup',e=>{
-  const label=keyLabelFromEvent(e);
-  if(!label) return;
-  activeKeys.delete(label);
-  pressKey(label,false);
+studyStage.onFrame(() => {
+  if (!studyHero || reducedMotion) return;
+  pointerSmooth.x += (pointer.x - pointerSmooth.x) * .03;
+  pointerSmooth.y += (pointer.y - pointerSmooth.y) * .03;
+  const targetY = -.58 + pointerSmooth.x * .08;
+  const targetX = -.08 + pointerSmooth.y * .035;
+  studyHero.rotation.y += (targetY - studyHero.rotation.y) * .035;
+  studyHero.rotation.x += (targetX - studyHero.rotation.x) * .035;
 });
 
-const pointer={x:0,y:0},smooth={x:0,y:0};
-window.addEventListener('pointermove',e=>{
-  pointer.x=e.clientX/innerWidth*2-1;
-  pointer.y=e.clientY/innerHeight*2-1;
-},{passive:true});
-keyboardStage.onFrame(()=>{
-  smooth.x+=(pointer.x-smooth.x)*.03;
-  smooth.y+=(pointer.y-smooth.y)*.03;
-  if(!reduceMotion){
-    keyboardRoot.rotation.y += ((.18+smooth.x*.08)-keyboardRoot.rotation.y)*.025;
-    keyboardRoot.rotation.x += ((-.08+smooth.y*.035)-keyboardRoot.rotation.x)*.025;
-  }
-});
+/* ------------------------------------------------------------
+   Robot — preserve V4/V1 inspect → explode → rebuild math
+------------------------------------------------------------ */
+const robotCanvas = document.getElementById('robot-canvas');
+const robotStage = createStage(robotCanvas, { tone: 1.06, dark: true });
+const robotFallback = document.getElementById('robot-fallback');
+const robotSteps = [...document.querySelectorAll('.robot-step')];
+const robotPhase = document.getElementById('robot-phase');
+const robotProgress = document.querySelector('.robot__progress span');
+const robotParts = [...document.querySelectorAll('.part')];
+let robotRoot = null;
+let explodeData = null;
+let robotLoading = false;
 
-/* ------------------------------------------------------------------
-   ROBOT — preserve the inspect / explode / rebuild choreography
-------------------------------------------------------------------- */
-
-const robotCanvas=document.getElementById('robot-canvas');
-const robotStage=createStage(robotCanvas);
-const robotStatus=document.getElementById('robot-status');
-const robotFallback=document.getElementById('robot-fallback');
-const robotSteps=[...document.querySelectorAll('.robot-step')];
-const parts=[...document.querySelectorAll('.part')];
-const robotProgress=document.querySelector('.robot__progress span');
-
-let robotRoot=null;
-let explodeData=null;
-
-function prepareExplosion(root){
+function prepareExplosion(root) {
   root.updateMatrixWorld(true);
-  const box=new THREE.Box3().setFromObject(root);
-  const centerWorld=box.getCenter(new THREE.Vector3());
-  const center=root.worldToLocal(centerWorld.clone());
-  const size=box.getSize(new THREE.Vector3());
-  const max=Math.max(size.x,size.y,size.z);
-  const items=[];
-  let i=0;
-  root.traverse(mesh=>{
-    if(!mesh.isMesh) return;
-    const posWorld=mesh.getWorldPosition(new THREE.Vector3());
-    const posRoot=root.worldToLocal(posWorld.clone());
-    let dir=posRoot.clone().sub(center);
-    if(dir.lengthSq()<1e-8){
-      const seed=(i*9301+(mesh.name||'').length*49297)%233280;
-      const r=seed/233280;
-      dir.set(Math.sin(r*12.7),.25+((i%5)/8),Math.cos(r*9.1));
+  const box = new THREE.Box3().setFromObject(root);
+  const centerWorld = box.getCenter(new THREE.Vector3());
+  const center = root.worldToLocal(centerWorld.clone());
+  const size = box.getSize(new THREE.Vector3());
+  const max = Math.max(size.x, size.y, size.z);
+  const items = [];
+  let i = 0;
+  root.traverse((mesh) => {
+    if (!mesh.isMesh) return;
+    const posWorld = mesh.getWorldPosition(new THREE.Vector3());
+    const posRoot = root.worldToLocal(posWorld.clone());
+    let dir = posRoot.clone().sub(center);
+    if (dir.lengthSq() < 1e-8) {
+      const seed = (i * 9301 + (mesh.name || '').length * 49297) % 233280;
+      const r = seed / 233280;
+      dir.set(Math.sin(r * 12.7), .25 + ((i % 5) / 8), Math.cos(r * 9.1));
     }
     dir.normalize();
-    items.push({mesh,parent:mesh.parent,originRoot:posRoot.clone(),dir,distance:max*(.24+(i%7)*.015)});
+    items.push({ mesh, parent: mesh.parent, originRoot: posRoot.clone(), dir, distance: max * (.24 + (i % 7) * .015) });
     i++;
   });
-  return {root,items};
+  return { root, items };
 }
 
-const tmpA=new THREE.Vector3(),tmpB=new THREE.Vector3();
-function setExplosion(data,amount){
-  const root=data.root;
+const tmpA = new THREE.Vector3();
+const tmpB = new THREE.Vector3();
+function setExplosion(data, amount) {
+  const root = data.root;
   root.updateMatrixWorld(true);
-  data.items.forEach(item=>{
-    tmpA.copy(item.originRoot).addScaledVector(item.dir,item.distance*amount);
+  data.items.forEach((item) => {
+    tmpA.copy(item.originRoot).addScaledVector(item.dir, item.distance * amount);
     tmpB.copy(tmpA);
     root.localToWorld(tmpB);
     item.parent.worldToLocal(tmpB);
@@ -356,86 +251,185 @@ function setExplosion(data,amount){
   root.updateMatrixWorld(true);
 }
 
-async function loadRobot(){
-  try{
-    const loader=new GLTFLoader();
-    const gltf=await loader.loadAsync('./assets/models/robot/DECODE Simple Bot.glb',e=>{
-      if(e.total) setBoot(.22+.6*(e.loaded/e.total));
-    });
-    robotRoot=gltf.scene;
+async function loadRobot() {
+  if (robotRoot || robotLoading) return;
+  robotLoading = true;
+  try {
+    const gltf = await loadAny(ROBOT_PATHS);
+    robotRoot = gltf.scene;
     cloneMaterials(robotRoot);
     robotStage.scene.add(robotRoot);
-    normalizeObject(robotRoot,robotStage.camera,mobile?1.7:1.32);
-    robotRoot.rotation.y=-.45;
-    robotRoot.rotation.x=-.05;
-    explodeData=prepareExplosion(robotRoot);
+    fitModel(robotRoot, robotStage.camera, mobile ? 1.72 : 1.31);
+    robotRoot.rotation.y = -.45;
+    robotRoot.rotation.x = -.05;
+    explodeData = prepareExplosion(robotRoot);
     robotFallback?.classList.add('is-hidden');
-    if(robotStatus) robotStatus.textContent='ready';
-    return true;
-  }catch(err){
-    console.warn('Robot asset not found; keeping visual fallback.',err);
-    if(robotStatus) robotStatus.textContent='asset missing';
-    return false;
+  } catch (error) {
+    console.warn('Robot GLB missing:', error);
+  } finally {
+    robotLoading = false;
   }
 }
 
-function setRobotStep(i){robotSteps.forEach((el,n)=>el.classList.toggle('is-active',n===i));}
-function updateRobotScroll(p){
-  if(robotProgress) robotProgress.style.transform=`scaleX(${p})`;
-  let explode=0;
-  if(p<.20){setRobotStep(0);explode=0;if(robotRoot)robotRoot.rotation.y=-.45+p*1.4;}
-  else if(p<.56){setRobotStep(1);explode=THREE.MathUtils.smoothstep(p,.20,.56);}
-  else if(p<.76){setRobotStep(2);explode=1;}
-  else {setRobotStep(3);explode=1-THREE.MathUtils.smoothstep(p,.76,.98);}
-  if(explodeData)setExplosion(explodeData,explode);
-  const show=p>.47&&p<.80;
-  parts.forEach((el,i)=>el.classList.toggle('is-visible',show&&p>(.49+i*.03)));
+function setRobotStep(index, label) {
+  robotSteps.forEach((el, i) => el.classList.toggle('is-active', i === index));
+  if (robotPhase) robotPhase.textContent = label;
+}
+function updateRobotScroll(p) {
+  if (robotProgress) robotProgress.style.transform = `scaleX(${p})`;
+  let explode = 0;
+  if (p < .20) {
+    setRobotStep(0, 'inspect');
+    explode = 0;
+    if (robotRoot) robotRoot.rotation.y = -.45 + p * 1.4;
+  } else if (p < .56) {
+    setRobotStep(1, 'separate');
+    explode = THREE.MathUtils.smoothstep(p, .20, .56);
+  } else if (p < .76) {
+    setRobotStep(2, 'understand');
+    explode = 1;
+  } else {
+    setRobotStep(3, 'rebuild');
+    explode = 1 - THREE.MathUtils.smoothstep(p, .76, .98);
+  }
+  if (explodeData) setExplosion(explodeData, explode);
+  const show = p > .47 && p < .80;
+  robotParts.forEach((el, i) => el.classList.toggle('is-visible', show && p > (.49 + i * .03)));
 }
 
-/* ------------------------------------------------------------------
-   PAGE MOTION
-------------------------------------------------------------------- */
+new IntersectionObserver((entries, observer) => {
+  if (entries.some((e) => e.isIntersecting)) {
+    loadRobot();
+    observer.disconnect();
+  }
+}, { rootMargin: '1300px' }).observe(document.getElementById('robot'));
 
-function setupMotion(){
-  if(!gsap||!ScrollTrigger||reduceMotion) return;
+/* ------------------------------------------------------------
+   Study model — second, quieter inspection chapter
+------------------------------------------------------------ */
+const detailCanvas = document.getElementById('study-detail-canvas');
+const detailStage = createStage(detailCanvas, { tone: 1.0, dark: false });
+const studyState = document.getElementById('study-state');
+const studyLine = document.querySelector('.study-stage__line span');
+let detailRoot = null;
+let detailFit = null;
 
-  gsap.from('.hero__copy>*',{y:24,opacity:0,stagger:.08,duration:1.05,delay:.3,ease:'power3.out'});
-  gsap.from('.hero__typed',{opacity:0,duration:1,delay:.8});
-
-  ScrollTrigger.create({
-    trigger:'#hero',start:'top top',end:'bottom top',scrub:true,
-    onUpdate:self=>{
-      keyboardRoot.position.y=self.progress*.4;
-      keyboardRoot.rotation.y=.18+self.progress*.42;
-      gsap.set('.hero__copy',{y:-self.progress*70,opacity:1-self.progress*.85});
-    }
-  });
-
-  gsap.to('.bridge__rail span',{scaleX:1,ease:'none',scrollTrigger:{trigger:'#bridge',start:'top 70%',end:'bottom 65%',scrub:true}});
-
-  ['#bridge','#statement','#work','#experience'].forEach(sel=>{
-    const section=document.querySelector(sel);
-    if(!section)return;
-    gsap.from(section.querySelectorAll('h2,p,article,strong'),{y:28,opacity:0,stagger:.035,duration:.9,ease:'power3.out',scrollTrigger:{trigger:section,start:'top 78%',once:true}});
-  });
-
-  ScrollTrigger.create({
-    trigger:'#robot',start:'top top',end:'bottom bottom',scrub:true,
-    onUpdate:self=>updateRobotScroll(self.progress)
-  });
-
-  gsap.from('.closing h2',{y:60,opacity:0,duration:1.2,ease:'power3.out',scrollTrigger:{trigger:'.closing',start:'top 65%',once:true}});
+function buildDetailScene() {
+  if (!studySource || detailRoot) return;
+  detailRoot = studySource.clone(true);
+  cloneMaterials(detailRoot);
+  detailStage.scene.add(detailRoot);
+  detailFit = fitModel(detailRoot, detailStage.camera, mobile ? 1.62 : 1.18);
+  detailRoot.rotation.set(-.06, -1.0, 0);
+  detailRoot.scale.setScalar(.92);
 }
 
-async function init(){
-  setBoot(.08);
-  await loadKeyboardModel();
-  setBoot(.26);
-  await loadRobot();
-  setBoot(.94);
+/* ------------------------------------------------------------
+   Motion language
+------------------------------------------------------------ */
+function reveal(selector, options = {}) {
+  if (!gsap || reducedMotion) return;
+  const el = document.querySelector(selector);
+  if (!el) return;
+  const targets = el.querySelectorAll(options.targets || 'h1,h2,h3,p,strong,article');
+  gsap.from(targets, {
+    y: options.y ?? 28,
+    opacity: 0,
+    stagger: options.stagger ?? .035,
+    duration: options.duration ?? .95,
+    ease: 'power3.out',
+    scrollTrigger: { trigger: el, start: options.start || 'top 78%', once: true }
+  });
+}
+
+function setupMotion() {
+  if (!gsap || !ScrollTrigger) return;
+
+  if (!reducedMotion) {
+    gsap.from('.hero__copy > *', { y: 34, opacity: 0, stagger: .08, duration: 1.15, delay: .24, ease: 'power3.out' });
+    gsap.from('.hero__meta', { opacity: 0, y: 12, duration: .9, delay: .75, ease: 'power3.out' });
+
+    ScrollTrigger.create({
+      trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true,
+      onUpdate(self) {
+        const p = self.progress;
+        if (studyHero && studyHeroFit) {
+          studyHero.rotation.y = -.58 + p * .9;
+          studyHero.rotation.x = -.08 - p * .06;
+          studyHero.position.x = (mobile ? 0 : studyHeroFit.max * .12) + p * studyHeroFit.max * .07;
+          studyHero.position.y = p * studyHeroFit.max * .025;
+          studyHero.scale.setScalar(1 + p * .08);
+        }
+        gsap.set('.hero__copy', { y: -p * 82, opacity: 1 - p * .92 });
+        gsap.set('.hero__meta', { opacity: 1 - p * 1.2 });
+      }
+    });
+
+    reveal('#about', { targets: '.intro__statement,.intro__body p', stagger: .08 });
+    reveal('#work', { targets: 'h2,.project-head__type,.project-head__lead,.project-head__specs>div', stagger: .055 });
+    reveal('.study-copy', { targets: 'h2,.study-copy__grid p', stagger: .07 });
+    reveal('.experience', { targets: 'h2,article', stagger: .07 });
+
+    ScrollTrigger.create({
+      trigger: '#robot', start: 'top top', end: 'bottom bottom', scrub: true,
+      onEnter: loadRobot,
+      onUpdate(self) { updateRobotScroll(self.progress); }
+    });
+
+    ScrollTrigger.create({
+      trigger: '#study-stage', start: 'top top', end: 'bottom bottom', scrub: true,
+      onEnter: buildDetailScene,
+      onUpdate(self) {
+        buildDetailScene();
+        const p = self.progress;
+        if (studyLine) studyLine.style.transform = `scaleX(${p})`;
+        if (!detailRoot || !detailFit) return;
+
+        if (p < .34) {
+          studyState.textContent = 'perspective';
+          detailRoot.rotation.y = -1.0 + p * 2.2;
+          detailRoot.rotation.x = -.06 + p * .12;
+          detailRoot.scale.setScalar(.92 + p * .18);
+          detailStage.camera.fov = 30 - p * 12;
+        } else if (p < .68) {
+          studyState.textContent = 'profile';
+          detailRoot.rotation.y = -.25 + (p - .34) * 2.4;
+          detailRoot.rotation.x = -.01;
+          detailRoot.scale.setScalar(1.0);
+          detailStage.camera.fov = 25 - (p - .34) * 13;
+        } else {
+          studyState.textContent = 'orthographic';
+          detailRoot.rotation.y = .58 + (p - .68) * .55;
+          detailRoot.rotation.x = 0;
+          detailRoot.scale.setScalar(1.0 - (p - .68) * .08);
+          detailStage.camera.fov = 20 - (p - .68) * 8;
+        }
+        detailStage.camera.fov = THREE.MathUtils.clamp(detailStage.camera.fov, 13, 30);
+        detailStage.camera.updateProjectionMatrix();
+      }
+    });
+
+    gsap.from('.footer h2', { y: 80, opacity: 0, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: '.footer', start: 'top 68%', once: true } });
+  } else {
+    ScrollTrigger.create({ trigger: '#robot', start: 'top top', end: 'bottom bottom', onEnter: loadRobot, onUpdate: (self) => updateRobotScroll(self.progress) });
+    buildDetailScene();
+  }
+}
+
+/* ------------------------------------------------------------
+   Init
+------------------------------------------------------------ */
+async function init() {
+  setBoot(.05);
+  await loadStudyHero();
+  setBoot(.82);
+  buildDetailScene();
   setupMotion();
   ScrollTrigger?.refresh();
-  setTimeout(hideBoot,160);
+  setBoot(.96);
+  setTimeout(hideBoot, 140);
+
+  if ('requestIdleCallback' in window && !saveData) requestIdleCallback(() => loadRobot(), { timeout: 2200 });
 }
 
 init();
