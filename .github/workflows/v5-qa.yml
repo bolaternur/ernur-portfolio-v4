@@ -15,6 +15,7 @@ jobs:
       - name: JavaScript syntax
         run: |
           node --check v5.js
+          node --check award.js
           node --check preloader-v2.js
 
       - name: Required page tree
@@ -35,6 +36,8 @@ jobs:
               '404.html',
               'v5.css',
               'v5.js',
+              'award.css',
+              'award.js',
               'preloader-v2.css',
               'preloader-v2.js',
               'setup-assets.ps1',
@@ -44,12 +47,24 @@ jobs:
               raise SystemExit('Missing required files: ' + ', '.join(missing))
           print('Required V5 page tree: OK')
 
+      - name: Award runtime wired
+        shell: python
+        run: |
+          from pathlib import Path
+          js = Path('v5.js').read_text(encoding='utf-8')
+          if "import('./award.js')" not in js:
+              raise SystemExit('award.js is not wired into v5.js')
+          home = Path('index.html').read_text(encoding='utf-8')
+          if 'preloader-v2.js' not in home or 'preloader-v2.css' not in home:
+              raise SystemExit('cinematic preloader is not wired into home')
+          print('Award runtime wiring: OK')
+
       - name: Localhost route smoke
         run: |
           python3 -m http.server 8080 >/tmp/ernur-v5-http.log 2>&1 &
           SERVER_PID=$!
           sleep 2
-          for route in / /work/ /work/tracelab/ /work/decode/ /work/3209/ /work/fusion360/ /work/web/ /about/ /lab/ /contact/ /404.html; do
+          for route in / /work/ /work/tracelab/ /work/decode/ /work/3209/ /work/fusion360/ /work/web/ /about/ /lab/ /contact/ /404.html /award.css /award.js /preloader-v2.js; do
             curl --fail --silent --show-error "http://127.0.0.1:8080${route}" >/dev/null
           done
           kill $SERVER_PID
