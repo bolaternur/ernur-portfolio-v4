@@ -1,49 +1,40 @@
-# Ernur Portfolio
+# Ernur — Portfolio
 
-The current final candidate is the **`v5-rebuild`** branch.
+Final public portfolio for **Ernur**, a student and future engineer in Almaty, Kazakhstan.
 
-Start here:
+**Live site:** https://bolaternur.github.io/ernur-portfolio-v4/
 
-- `V5_README.md` — how to run the site locally.
-- `V5_STATUS.md` — what is implemented / what still needs QA.
-- `V5_FINAL_CHECKLIST.md` — screenshots and production checks before merging.
-- `AWWWARDS_MASTER_PLAN.md` — creative/technical direction.
+## Focus
 
-## Local run
+Coding is the main discipline, with work across:
 
-Download the `v5-rebuild` branch ZIP, extract it, then run:
+- Python, C++, Java
+- creative web development
+- TraceLab software engineering
+- robotics
+- Fusion 360 / CAD
+- interactive 3D experiences
 
-```text
-START_LOCALHOST.bat
-```
+## Selected work
 
-If Windows blocks `.bat`, open PowerShell in the extracted folder:
+- **TraceLab** — engineering evidence infrastructure for student engineering teams
+- **DECODE Simple Bot** — interactive robotics study with inspect → separate → understand → rebuild choreography
+- **3209 Mechanical Study** — cinematic 3D inspection
+- **First Fusion 360 Projects** — Main Assembly + Kicker Insert
+- **Client Web Work** — websites designed, developed and sold for educational organizations
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\setup-assets.ps1
-py -m http.server 8080
-```
+## Site stack
 
-Open:
+- Three.js
+- GSAP + ScrollTrigger
+- Lenis
+- Meshoptimizer / gltfpack production pipeline
+- GitHub Actions
+- GitHub Pages
 
-```text
-http://localhost:8080
-```
+The four original GLB files are stored in `source-assets/`. They are **not served directly**. The Pages workflow automatically generates Meshopt-compressed production GLBs before deployment, keeping the public experience much lighter while preserving the original source files in GitHub.
 
-## Required 3D source files
-
-Keep these in Downloads/Desktop/Documents before running asset setup:
-
-```text
-DECODE Simple Bot(1).glb
-3209-0001-0007.glb
-Main Assembly.glb
-kicker_insert.glb
-```
-
-The setup script copies them into the correct `assets/models/...` locations automatically.
-
-## Final site pages
+## Pages
 
 ```text
 /
@@ -59,4 +50,6 @@ The setup script copies them into the correct `assets/models/...` locations auto
 /404.html
 ```
 
-Do **not** merge `v5-rebuild` into `main` until the real models have been visually checked and the final performance pass is complete.
+## Development
+
+The public branch is `main`. Every push is checked by GitHub Actions and then deployed to GitHub Pages.
