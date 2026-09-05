@@ -1,0 +1,1 @@
+The original GLB models are stored in source-assets/. GitHub Pages generates optimized public copies into this directory during deployment. Local repository downloads can use the source-assets models via the documented local preview flow.
