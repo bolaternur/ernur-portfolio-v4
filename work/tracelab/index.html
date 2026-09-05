@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#11110f" />
+  <meta name="description" content="TraceLab — evidence infrastructure for student engineering teams, built by Ernur." />
+  <title>TraceLab — Ernur</title>
+  <link rel="stylesheet" href="../../v5.css" />
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"}}</script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script><script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+</head>
+<body data-base="../../" data-page="tracelab">
+  <div class="boot" aria-live="polite"><div class="boot__label">TRACELAB <span class="boot__phase">route</span></div><div class="boot__track"><span></span></div><span class="boot__value">00</span></div>
+  <div class="route-transition" aria-hidden="true"><span class="route-transition__name">TraceLab</span><span class="route-transition__meta">software / case study</span></div>
+  <header class="site-nav"><a class="site-nav__mark" href="../../" data-transition-title="home">E<span>/</span>26</a><div class="site-nav__right"><nav class="site-nav__mini"><a href="../" data-transition-title="work">work</a><a href="../../about/" data-transition-title="about">about</a><a href="https://github.com/bolaternur" target="_blank" rel="noreferrer">github ↗</a></nav><button class="site-nav__menu" data-menu-button aria-expanded="false">menu</button></div></header>
+  <aside class="menu-panel"><nav class="menu-panel__links"><a href="../../" data-transition-title="home"><small>00</small>Home</a><a href="../" data-transition-title="work"><small>01</small>Work</a><a href="../../about/" data-transition-title="about"><small>02</small>About</a><a href="../../lab/" data-transition-title="lab"><small>03</small>Lab</a><a href="../../contact/" data-transition-title="contact"><small>04</small>Contact</a></nav><div class="menu-panel__aside">TraceLab<br />Build. Test. Decide.<br />Remember.</div></aside>
+
+  <main>
+    <section class="page-hero page-hero--dark">
+      <div class="page-hero__top"><span>01 / Software project</span><span>Engineering evidence infrastructure</span></div>
+      <h1 class="display">Trace<br />Lab.</h1>
+      <div class="page-hero__bottom"><p class="lead">Build. Test. Decide. Remember.</p><p class="body-large" style="color:rgba(244,241,234,.56)">A system for turning code, CAD, photos, tests and student reasoning into one source-linked engineering history.</p></div>
+    </section>
+
+    <section class="case-intro">
+      <div class="case-intro__label">The idea</div>
+      <div class="case-intro__copy" data-reveal><p>Engineering teams create evidence constantly. The difficult part is remembering why something changed, what was tested, and which decision followed.</p><p class="small">TraceLab connects that evidence into a history that can support notebooks, season handoff, contribution evidence, coach insight and future iteration.</p></div>
+    </section>
+
+    <section class="section">
+      <div class="section__bar"><span>Product thesis</span><span>From activity to engineering memory</span></div>
+      <div class="section__grid section__grid--wide"><h2 class="display display--small" data-reveal>Work → why →<br />evidence → test →<br />decision → next.</h2><div class="section__copy body-large" data-reveal><p>The interface is designed around engineering causality rather than vanity metrics or a generic AI dashboard.</p><p class="muted">Capture asks for missing human context. Evidence preserves source provenance. Tests link to decisions. Handoff keeps failures, unresolved questions and reasoning alive for the next season.</p></div></div>
+      <div class="process-strip" data-reveal-group><div><span>01</span><strong>Work</strong></div><div><span>02</span><strong>Why</strong></div><div><span>03</span><strong>Evidence</strong></div><div><span>04</span><strong>Test + decision</strong></div><div><span>05</span><strong>Next iteration</strong></div></div>
+    </section>
+
+    <section class="trace-demo">
+      <div class="trace-demo__head"><span>Evidence Trace / read-only power view</span><span>source → iteration → test → decision</span></div>
+      <div class="trace-canvas" aria-label="Simplified visual explanation of the TraceLab Evidence Trace">
+        <div class="trace-line trace-line--1"></div><div class="trace-line trace-line--2 is-suggested"></div><div class="trace-line trace-line--3"></div>
+        <div class="trace-node trace-node--source"><span>source event</span><strong>CAD change / commit / capture</strong></div>
+        <div class="trace-node trace-node--iteration"><span>iteration</span><strong>What changed and why?</strong></div>
+        <div class="trace-node trace-node--test"><span>test</span><strong>Before / after evidence</strong></div>
+        <div class="trace-node trace-node--decision"><span>decision</span><strong>Keep, reject or iterate</strong></div>
+      </div>
+      <div class="trace-demo__footer"><span>bounded visible set</span><span>accepted + suggested semantics</span><span>keyboard / mobile alternatives</span></div>
+    </section>
+
+    <section class="metrics">
+      <div class="metric"><strong>30</strong><span>visible-object bound</span></div>
+      <div class="metric"><strong>4</strong><span>core evidence node types</span></div>
+      <div class="metric"><strong>51</strong><span>frontend contracts passed</span></div>
+      <div class="metric"><strong>11</strong><span>pure model tests passed</span></div>
+    </section>
+
+    <section class="section">
+      <div class="section__bar"><span>Implemented system</span><span>Not a mockup</span></div>
+      <div class="section__grid"><h2 class="display display--small" data-reveal>Capture.<br />Connect.<br />Explain.</h2><div class="section__copy body-large" data-reveal><p>Implemented areas include authentication and team roles, seasons and subsystems, append-only evidence, versioned annotations, iterations, tests, decisions, offline capture and evidence triage.</p><p class="muted">The wider system also includes Evidence Graph, Time Machine, Failure Library, search, handoff, contribution mapping, coach and organization views, notifications, policy controls and provenance-preserving exports.</p></div></div>
+    </section>
+
+    <section class="section">
+      <div class="section__bar"><span>Evidence Trace / Phase C</span><span>Spatial workbench</span></div>
+      <div class="section__grid section__grid--wide"><h2 class="display display--small" data-reveal>A graph that<br />explains — not<br />decorates.</h2><div class="section__copy body-large" data-reveal><p>The old fixed SVG graph was replaced with a bounded, read-only spatial Trace. It renders stored relationships instead of inventing or editing them.</p><p class="muted">Desktop uses React Flow with custom evidence nodes, semantic relation edges, focus controls and an optional minimap. ELK adds layered placement after a deterministic source → iteration → test → decision fallback. Mobile intentionally uses focused evidence cards rather than a tiny infinite canvas.</p></div></div>
+    </section>
+
+    <section class="section">
+      <div class="section__bar"><span>Architecture</span><span>Software stack</span></div>
+      <h2 class="display display--small" data-reveal>Built as a<br />real system.</h2>
+      <div class="tech-grid" data-reveal-group>
+        <div class="tech-card"><span>Framework</span><h3>Next.js 16 + React 19</h3><p>App Router architecture with public, auth, onboarding, workspace and API routes.</p></div>
+        <div class="tech-card"><span>Data</span><h3>PostgreSQL + Drizzle</h3><p>Structured domain data, migrations, tenant-aware server access and evidence queries.</p></div>
+        <div class="tech-card"><span>Spatial UI</span><h3>React Flow + ELK</h3><p>Bounded graph rendering with semantic fallback layout and layered placement.</p></div>
+        <div class="tech-card"><span>Language</span><h3>TypeScript</h3><p>Typed models, contracts, frontend logic and server-side domain boundaries.</p></div>
+        <div class="tech-card"><span>State / validation</span><h3>Zustand + Zod</h3><p>Client state and schema validation inside a larger domain-driven flow.</p></div>
+        <div class="tech-card"><span>Quality</span><h3>Vitest + static audits</h3><p>Contract checks, model tests, accessibility/motion auditing and syntax verification.</p></div>
+      </div>
+    </section>
+
+    <section class="section section--dark">
+      <div class="section__bar"><span>Trust</span><span>Evidence must remain evidence</span></div>
+      <div class="section__grid"><h2 class="display display--small" data-reveal>Source first.<br />AI second.</h2><div class="section__copy body-large" data-reveal><p>Student authorship and source provenance stay distinct. AI is contextual and source-linked rather than becoming the center of the product.</p><p style="color:rgba(244,241,234,.52)">The system includes policy-aware competition controls, an AI action log, privacy-oriented capture behavior, tenant isolation tests and provenance-preserving exports.</p></div></div>
+    </section>
+
+    <section class="section">
+      <div class="section__bar"><span>Verification note</span><span>Development artifact</span></div>
+      <div class="section__grid"><h2 class="display display--small" data-reveal>Test what can<br />be tested.</h2><div class="section__copy body-large" data-reveal><p>Dependency-free verification in the project artifact reported passing frontend contracts, pure model tests, static accessibility/motion auditing and TypeScript/TSX syntax checks.</p><p class="muted">The handoff explicitly does not claim full framework-level install, typecheck, lint, test and build verification in that artifact environment because npm registry access was unavailable there.</p></div></div>
+    </section>
+
+    <section class="contact-hero"><p class="eyebrow" style="color:rgba(244,241,234,.48)">Next project</p><h1>From<br />software<br />to motion.</h1><div class="contact-hero__actions"><a href="../decode/" data-transition-title="DECODE">DECODE Simple Bot ↗</a><a href="../" data-transition-title="work">All work ↗</a><a href="https://github.com/bolaternur" target="_blank" rel="noreferrer">GitHub ↗</a></div></section>
+  </main>
+  <script type="module" src="../../v5.js"></script>
+</body>
+</html>
