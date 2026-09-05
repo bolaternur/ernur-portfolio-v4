@@ -3,16 +3,16 @@ $ErrorActionPreference = 'SilentlyContinue'
 $Repo = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ModelRoot = Join-Path $Repo 'assets\models'
 $RobotDir = Join-Path $ModelRoot 'robot'
-$KeyboardDir = Join-Path $ModelRoot 'keyboard'
-
+$StudyDir = Join-Path $ModelRoot 'study'
 New-Item -ItemType Directory -Force -Path $RobotDir | Out-Null
-New-Item -ItemType Directory -Force -Path $KeyboardDir | Out-Null
+New-Item -ItemType Directory -Force -Path $StudyDir | Out-Null
 
 $HomeDir = [Environment]::GetFolderPath('UserProfile')
 $SearchRoots = @(
   (Join-Path $HomeDir 'Downloads'),
   (Join-Path $HomeDir 'Desktop'),
-  (Split-Path -Parent $Repo)
+  (Split-Path -Parent $Repo),
+  $Repo
 ) | Where-Object { Test-Path $_ } | Select-Object -Unique
 
 function Find-FirstFile {
@@ -31,57 +31,42 @@ function Find-FirstFile {
 }
 
 Write-Host ''
-Write-Host 'ERNUR V4 / ASSET SETUP' -ForegroundColor White
-Write-Host 'Searching Downloads/Desktop for your uploaded 3D files...' -ForegroundColor DarkGray
+Write-Host 'ERNUR PORTFOLIO V5 / ASSET SETUP' -ForegroundColor White
+Write-Host 'Searching Downloads/Desktop for both GLB models...' -ForegroundColor DarkGray
 Write-Host ''
 
 $robotTarget = Join-Path $RobotDir 'DECODE Simple Bot.glb'
 if (-not (Test-Path $robotTarget)) {
-  $robot = Find-FirstFile @('DECODE Simple Bot.glb','ernur-simple-bot.glb')
+  $robot = Find-FirstFile @('DECODE Simple Bot(1).glb','DECODE Simple Bot.glb','ernur-simple-bot.glb')
   if ($robot) {
     Copy-Item $robot.FullName $robotTarget -Force
-    Write-Host ('[OK] Robot: ' + $robot.FullName) -ForegroundColor Green
+    Write-Host ('[OK] DECODE robot: ' + $robot.FullName) -ForegroundColor Green
   } else {
-    Write-Host '[!] Robot GLB not found automatically.' -ForegroundColor Yellow
+    Write-Host '[!] DECODE Simple Bot GLB not found automatically.' -ForegroundColor Yellow
   }
 } else {
-  Write-Host '[OK] Robot already installed.' -ForegroundColor Green
+  Write-Host '[OK] DECODE robot already installed.' -ForegroundColor Green
 }
 
-$objTarget = Join-Path $KeyboardDir 'lowprofilemechanicalkeyboard.obj'
-$mtlTarget = Join-Path $KeyboardDir 'lowprofilemechanicalkeyboard.mtl'
-
-if (-not (Test-Path $objTarget)) {
-  $obj = Find-FirstFile @('lowprofilemechanicalkeyboard.obj')
-  if ($obj) {
-    Copy-Item $obj.FullName $objTarget -Force
-    Write-Host ('[OK] Keyboard OBJ: ' + $obj.FullName) -ForegroundColor Green
+$studyTarget = Join-Path $StudyDir '3209-0001-0007.glb'
+if (-not (Test-Path $studyTarget)) {
+  $study = Find-FirstFile @('3209-0001-0007.glb')
+  if ($study) {
+    Copy-Item $study.FullName $studyTarget -Force
+    Write-Host ('[OK] 3209 study model: ' + $study.FullName) -ForegroundColor Green
   } else {
-    Write-Host '[!] Keyboard OBJ not found automatically.' -ForegroundColor Yellow
+    Write-Host '[!] 3209-0001-0007.glb not found automatically.' -ForegroundColor Yellow
   }
 } else {
-  Write-Host '[OK] Keyboard OBJ already installed.' -ForegroundColor Green
-}
-
-if (-not (Test-Path $mtlTarget)) {
-  $mtl = Find-FirstFile @('lowprofilemechanicalkeyboard.mtl')
-  if ($mtl) {
-    Copy-Item $mtl.FullName $mtlTarget -Force
-    Write-Host ('[OK] Keyboard MTL: ' + $mtl.FullName) -ForegroundColor Green
-  } else {
-    Write-Host '[!] Keyboard MTL not found automatically.' -ForegroundColor Yellow
-  }
-} else {
-  Write-Host '[OK] Keyboard MTL already installed.' -ForegroundColor Green
+  Write-Host '[OK] 3209 study model already installed.' -ForegroundColor Green
 }
 
 Write-Host ''
-if ((Test-Path $robotTarget) -and (Test-Path $objTarget) -and (Test-Path $mtlTarget)) {
-  Write-Host 'All primary 3D assets are ready.' -ForegroundColor Green
+if ((Test-Path $robotTarget) -and (Test-Path $studyTarget)) {
+  Write-Host 'Both V5 GLB assets are ready.' -ForegroundColor Green
 } else {
-  Write-Host 'The site still runs with its keyboard/robot fallbacks.' -ForegroundColor Yellow
-  Write-Host 'For the authentic models, copy the missing files to:' -ForegroundColor Yellow
-  Write-Host ('  ' + $RobotDir)
-  Write-Host ('  ' + $KeyboardDir)
+  Write-Host 'Missing files can also be copied manually:' -ForegroundColor Yellow
+  Write-Host ('  Robot -> ' + $RobotDir)
+  Write-Host ('  Study -> ' + $StudyDir)
 }
 Write-Host ''
