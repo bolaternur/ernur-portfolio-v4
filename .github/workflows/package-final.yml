@@ -1,0 +1,44 @@
+name: Package Final Portfolio
+
+on:
+  push:
+    branches: [v5-rebuild]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build clean package
+        run: |
+          set -e
+          OUT="ernur-portfolio-final"
+          mkdir -p "$OUT"
+          cp index.html 404.html v5.css v5.js award.css award.js preloader-v2.css preloader-v2.js START_LOCALHOST.bat setup-assets.ps1 PUSH_3D_ASSETS_TO_GITHUB.bat "$OUT"/
+          cp V5_FINAL_CHECKLIST.md "$OUT"/README-FIRST.md 2>/dev/null || true
+          cp -R work about lab contact assets "$OUT"/
+          find "$OUT" -name '.DS_Store' -delete
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('ernur-portfolio-final')
+          required=['index.html','v5.js','award.js','award.css','setup-assets.ps1','work/tracelab/index.html','work/decode/index.html','work/fusion360/index.html']
+          missing=[p for p in required if not (root/p).exists()]
+          if missing: raise SystemExit('Missing package files: '+', '.join(missing))
+          print('Package tree OK')
+          PY
+          zip -qr ernur-portfolio-final.zip "$OUT"
+          ls -lh ernur-portfolio-final.zip
+
+      - name: Upload final ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: ernur-portfolio-final
+          path: ernur-portfolio-final.zip
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
