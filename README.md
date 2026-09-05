@@ -1,93 +1,62 @@
-# ERNUR Portfolio V4
+# Ernur Portfolio
 
-Minimal cinematic portfolio built around one narrative:
+The current final candidate is the **`v5-rebuild`** branch.
 
-**Keyboard → Code → Robot → Motion**
+Start here:
 
-The visual direction uses an obsidian/bone-white system with restrained RGB/prism accents. The interface intentionally avoids custom cursors, glassmorphism, noisy card grids, giant decorative identity labels and random WebGL objects.
+- `V5_README.md` — how to run the site locally.
+- `V5_STATUS.md` — what is implemented / what still needs QA.
+- `V5_FINAL_CHECKLIST.md` — screenshots and production checks before merging.
+- `AWWWARDS_MASTER_PLAN.md` — creative/technical direction.
 
-## Run on localhost — easiest method
+## Local run
 
-1. Clone or download this repository.
-2. Double-click **`START_LOCALHOST.bat`**.
-3. The launcher automatically searches your **Downloads** and **Desktop** for:
-   - `DECODE Simple Bot.glb`
-   - `lowprofilemechanicalkeyboard.obj`
-   - `lowprofilemechanicalkeyboard.mtl`
-4. It copies any matches into the correct `assets/models/...` folders.
-5. Your browser opens automatically at:
-
-`http://localhost:8080`
-
-The page also has procedural 3D fallbacks, so it still opens even if one of the original models is not found.
-
-## Manual localhost
-
-```bash
-python -m http.server 8080
-```
-
-Then open `http://localhost:8080`.
-
-Do not open `index.html` directly with `file://`; ES modules and 3D assets require HTTP.
-
-## Interactive keyboard
-
-The hero attempts to load the authentic OBJ/MTL keyboard. When the source geometry exposes individual key-sized meshes, those meshes are mapped to keyboard input. If the exported model is merged, the site keeps the authentic keyboard visible and adds a lightweight tactile key layer for the input interaction.
-
-Press keys on your physical keyboard. Supported interaction includes letters, numbers and Space. Keydown produces a short physical depression / light response; keyup returns the key.
-
-## Robot scene
-
-The robot choreography stays focused on the original interaction concept:
-
-1. Inspect
-2. Separate
-3. Understand
-4. Rebuild
-
-The authentic GLB is loaded from:
-
-`assets/models/robot/DECODE Simple Bot.glb`
-
-The section keeps the radial exploded-assembly behavior rather than replacing it with unrelated effects.
-
-## Required model paths
+Download the `v5-rebuild` branch ZIP, extract it, then run:
 
 ```text
-assets/
-└── models/
-    ├── keyboard/
-    │   ├── lowprofilemechanicalkeyboard.obj
-    │   └── lowprofilemechanicalkeyboard.mtl
-    └── robot/
-        └── DECODE Simple Bot.glb
+START_LOCALHOST.bat
 ```
 
-## If the automatic asset finder misses your files
+If Windows blocks `.bat`, open PowerShell in the extracted folder:
 
-Copy them manually into the paths above, refresh localhost, and the page will use the authentic models.
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\setup-assets.ps1
+py -m http.server 8080
+```
 
-## Current stack
+Open:
 
-- Three.js
-- GSAP + ScrollTrigger
-- Vanilla ES modules
-- Static HTML/CSS/JS
+```text
+http://localhost:8080
+```
 
-No framework is required to run the site.
+## Required 3D source files
 
-## Before an Awwwards submission
+Keep these in Downloads/Desktop/Documents before running asset setup:
 
-This repository is a creative prototype / portfolio build, not a guarantee of an Awwwards win. Before submitting publicly, do a final pass for:
+```text
+DECODE Simple Bot(1).glb
+3209-0001-0007.glb
+Main Assembly.glb
+kicker_insert.glb
+```
 
-- GLB compression / Meshopt or gltfpack
-- cross-browser testing
-- mobile GPU profiling
-- Lighthouse / Core Web Vitals
-- accessible keyboard navigation
-- final contact links
-- Open Graph artwork
-- production self-hosting of runtime dependencies/fonts where licensing permits
+The setup script copies them into the correct `assets/models/...` locations automatically.
 
-The design goal is **restraint + one memorable interaction system**, not the number of visual effects.
+## Final site pages
+
+```text
+/
+/work/
+/work/tracelab/
+/work/decode/
+/work/3209/
+/work/fusion360/
+/work/web/
+/about/
+/lab/
+/contact/
+/404.html
+```
+
+Do **not** merge `v5-rebuild` into `main` until the real models have been visually checked and the final performance pass is complete.
