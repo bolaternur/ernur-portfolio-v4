@@ -28,6 +28,43 @@ function Find-ExactFile([string[]]$Names) {
     return $null
 }
 
+function Ensure-Git {
+    if (Get-Command git -ErrorAction SilentlyContinue) { return }
+
+    Write-Host "`nGit is not installed. Trying to install Git for Windows automatically..." -ForegroundColor Yellow
+    $winget = Get-Command winget -ErrorAction SilentlyContinue
+    if (-not $winget) {
+        Write-Host "Automatic installation is not available because winget was not found." -ForegroundColor Red
+        Write-Host "Install Git for Windows from https://git-scm.com/download/win, then reopen PowerShell and run the same command again." -ForegroundColor Yellow
+        exit 1
+    }
+
+    & winget install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Git installation did not complete successfully." -ForegroundColor Red
+        Write-Host "Install Git manually from https://git-scm.com/download/win and rerun this helper." -ForegroundColor Yellow
+        exit 1
+    }
+
+    $candidateDirs = @(
+        (Join-Path $env:ProgramFiles 'Git\cmd'),
+        (Join-Path $env:ProgramFiles 'Git\bin'),
+        (Join-Path $env:LOCALAPPDATA 'Programs\Git\cmd')
+    ) | Where-Object { Test-Path (Join-Path $_ 'git.exe') }
+
+    if ($candidateDirs.Count -gt 0) {
+        $env:Path = "$($candidateDirs[0]);$env:Path"
+    }
+
+    if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+        Write-Host "Git was installed, but this PowerShell window has not refreshed PATH yet." -ForegroundColor Yellow
+        Write-Host "Close PowerShell, open it again, and run the same upload command one more time." -ForegroundColor Cyan
+        exit 0
+    }
+
+    Write-Host "Git installed successfully." -ForegroundColor Green
+}
+
 $models = [ordered]@{
     '3209-0001-0007.glb' = Find-ExactFile @('3209-0001-0007.glb')
     'DECODE Simple Bot.glb' = Find-ExactFile @('DECODE Simple Bot(1).glb','DECODE Simple Bot.glb')
@@ -46,10 +83,7 @@ if ($missing.Count -gt 0) {
 Write-Host "`nFound all four models:" -ForegroundColor Green
 $models.GetEnumerator() | ForEach-Object { Write-Host " [OK] $($_.Key) -> $($_.Value)" }
 
-if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
-    Write-Host "Git is not installed or not in PATH." -ForegroundColor Red
-    exit 1
-}
+Ensure-Git
 
 $temp = Join-Path $env:TEMP 'ernur-portfolio-final-publish'
 if (Test-Path $temp) { Remove-Item $temp -Recurse -Force }
@@ -77,7 +111,7 @@ try {
     git commit -m 'Add permanent final 3D source assets'
     if ($LASTEXITCODE -ne 0) { throw 'git commit failed' }
 
-    Write-Host "`nUploading ~84 MB of original 3D data. This can take several minutes." -ForegroundColor Yellow
+    Write-Host "`nUploading original 3D data. This can take several minutes." -ForegroundColor Yellow
     Write-Host "GitHub may warn that 3209 is larger than 50 MB; it is still below GitHub's 100 MB per-file hard limit." -ForegroundColor DarkGray
     git push origin $branch
     if ($LASTEXITCODE -ne 0) { throw 'git push failed. If GitHub asks you to sign in, complete the browser login and run the helper again.' }
