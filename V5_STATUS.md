@@ -2,20 +2,37 @@
 
 Branch: `v5-rebuild`
 
-Implemented:
+## Implemented
 
-- Full visual rebuild.
-- 3209 GLB hero scene.
-- DECODE Simple Bot preserved explode/rebuild choreography.
-- Second 3209 technical inspection chapter.
-- GSAP + ScrollTrigger + Lenis motion system.
-- Responsive layout.
-- Reduced motion support.
-- Automatic local asset setup for both GLB files.
+- Final multi-page visual rebuild.
+- Coding-first personal positioning.
+- First-visit preloader with real critical-model progress.
+- Global route transitions.
+- Full-screen menu transition.
+- Text and section reveal system.
+- GSAP + ScrollTrigger + Lenis synchronization.
+- Page-aware Three.js loader.
+- 3209 cinematic hero and inspection scene.
+- DECODE Simple Bot preserved inspect → separate → understand → rebuild choreography.
+- Main Assembly interactive Fusion 360 scene.
+- Kicker Insert interactive Fusion 360 scene.
+- TraceLab software case study.
+- Work index.
+- About / RFMSH / AP / programming / experience content.
+- Commercial web-development case study.
+- Personal Lab / Cubing Club / hobbies page.
+- Contact page and custom 404.
+- Responsive layout and reduced-motion handling.
+- Automatic local asset setup for all four GLBs.
 - Localhost launcher.
 
-Pending before merge to main:
+## Pending before merge to `main`
 
-- Visual screenshots with the two real GLB files loaded locally.
-- Final lighting/camera tuning based on those screenshots.
-- Production GLB compression / WPO pass.
+- Visual QA with all four real GLBs loaded locally.
+- Camera/scale/lighting tuning based on screenshots.
+- GLB optimization with meshoptimizer/gltfpack while preserving DECODE hierarchy.
+- Lighthouse/Core Web Vitals pass.
+- Chrome/Safari/Firefox and mobile QA.
+- Final metadata / OpenGraph image.
+
+Do not merge to `main` until the visual QA pass is complete.
