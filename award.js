@@ -271,3 +271,5 @@ function initAwardLayer(){
 
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initAwardLayer,{once:true});
 else initAwardLayer();
+
+import('./motion-v2.js').catch((error)=>console.warn('Motion V2 layer unavailable',error));
