@@ -1,0 +1,65 @@
+/* ERNUR / MOTION V2
+   A restrained production adaptation of ideas studied in the supplied source pack:
+   scroll-driven spatial planes, blur-to-sharp typography, progressive text highlight,
+   SVG-filter entrances and line/letter hover choreography.
+*/
+:root{--motion-ease:cubic-bezier(.52,.01,0,1);--motion-accent:#d45a36;--motion-paper:#eeebe4;--motion-paper-hi:#f7f4ee;--motion-ink:#11110f}
+
+/* Work cards: visual content stays inside the row/card. No floating preview. */
+.work-card{isolation:isolate;overflow:hidden}
+.motion-card-plane{position:absolute;z-index:0;right:5%;top:12%;width:min(34%,280px);aspect-ratio:1.34;border:1px solid rgba(17,17,15,.11);pointer-events:none;transform-style:preserve-3d;transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:border-color .4s ease,background .4s ease;opacity:.78}
+.work-card--dark .motion-card-plane{border-color:rgba(244,241,234,.13)}
+.motion-card-plane::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(17,17,15,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(17,17,15,.07) 1px,transparent 1px);background-size:32px 32px;opacity:.55}
+.work-card--dark .motion-card-plane::before{background-image:linear-gradient(rgba(244,241,234,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(244,241,234,.07) 1px,transparent 1px)}
+.motion-card-plane::after{content:'';position:absolute;left:14%;right:14%;top:50%;height:1px;background:linear-gradient(90deg,transparent,var(--motion-accent),transparent);box-shadow:0 0 16px rgba(212,90,54,.18);transform:rotate(-11deg)}
+.motion-card-rail{position:absolute;z-index:2;left:clamp(22px,3vw,48px);right:clamp(22px,3vw,48px);bottom:clamp(22px,3vw,40px);display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:7px;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;opacity:.42;transform:translateY(8px);transition:opacity .45s ease,transform .55s var(--motion-ease)}
+.motion-card-rail span{white-space:nowrap}.motion-card-rail i{display:block;flex:1;height:1px;background:currentColor;opacity:.22;transform:scaleX(.12);transform-origin:left;transition:transform .8s var(--motion-ease)}
+.work-card:hover .motion-card-rail{opacity:.76;transform:translateY(0)}.work-card:hover .motion-card-rail i{transform:scaleX(1)}
+.work-card>div,.work-card>span,.work-card>h2,.work-card>p{position:relative;z-index:2}
+
+.motion-sweep{position:absolute;z-index:4;left:0;right:0;top:52%;height:1px;background:var(--motion-accent);transform:scaleX(0);transform-origin:left;pointer-events:none;opacity:.72;box-shadow:0 0 14px rgba(212,90,54,.2)}
+.motion-char{display:inline-block;will-change:transform,opacity}
+
+/* Home project list gets an inline signal rather than a detached preview. */
+.project-row .motion-row-signal{position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent 0,var(--motion-accent) 38%,transparent 72%);transform:translateX(-100%);opacity:0;pointer-events:none;transition:transform .8s var(--motion-ease),opacity .3s ease}
+.project-row:hover .motion-row-signal{transform:translateX(45%);opacity:.6}
+
+/* Progressive text highlight */
+.motion-highlight{position:relative;padding:clamp(90px,12vw,180px) var(--pad);background:var(--motion-paper-hi);border-top:1px solid rgba(17,17,15,.11);border-bottom:1px solid rgba(17,17,15,.11)}
+.motion-highlight__label{display:flex;justify-content:space-between;margin-bottom:clamp(38px,6vw,80px);font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.09em;color:rgba(17,17,15,.44)}
+.motion-highlight__text{margin:0;max-width:1320px;font-family:var(--display);font-size:clamp(42px,6.9vw,112px);font-weight:430;line-height:.93;letter-spacing:-.065em;color:var(--motion-ink)}
+.motion-highlight__word{display:inline;opacity:.13;transition:opacity .08s linear,color .08s linear}
+.motion-highlight__word.is-lit{opacity:1}.motion-highlight__word.is-hot{color:var(--motion-accent)}
+
+/* TraceLab gets a light spatial field, not another black block. */
+body[data-page="tracelab"] .trace-canvas{perspective:1200px;overflow:hidden}
+body[data-page="tracelab"] .trace-canvas::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--tx,50%) var(--ty,50%),rgba(212,90,54,.09),transparent 26%);mix-blend-mode:multiply}
+body[data-page="tracelab"] .trace-node{will-change:transform,opacity;transition:box-shadow .35s ease,border-color .35s ease}
+body[data-page="tracelab"] .trace-node:hover{box-shadow:0 18px 60px rgba(17,17,15,.08);border-color:rgba(212,90,54,.5)}
+
+/* Blur typography is intentionally sparse: only selected headings/copy. */
+.motion-blur-target{will-change:filter,opacity}
+
+/* About / skill rows: tiny code-line reaction */
+.skill-row{position:relative;overflow:hidden}
+.skill-row::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:linear-gradient(90deg,var(--motion-accent),transparent);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--motion-ease);opacity:.58}
+.skill-row:hover::after{transform:scaleX(1)}
+.skill-row strong{display:inline-block;transition:letter-spacing .45s var(--motion-ease),transform .45s var(--motion-ease)}
+.skill-row:hover strong{letter-spacing:-.045em;transform:translateX(6px)}
+
+/* 3D cube lab */
+.cube-scene{position:relative;overflow:hidden;isolation:isolate}
+.cube-scene.is-webgl-ready .cube{display:none}
+.cube-webgl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.cube-webgl:active{cursor:grabbing}
+.cube-webgl-hud{position:absolute;z-index:5;inset:22px;pointer-events:none;font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:rgba(244,241,234,.5)}
+.cube-webgl-hud span{position:absolute}.cube-webgl-hud span:first-child{left:0;top:0}.cube-webgl-hud span:nth-child(2){right:0;top:0;text-align:right}.cube-webgl-hud span:nth-child(3){left:0;bottom:0;color:rgba(244,241,234,.32)}
+.cube-webgl-hud::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,var(--motion-accent),transparent);opacity:.28}
+
+/* Subtle scan accent for selected large sections */
+.motion-section-scan{position:absolute;z-index:3;left:var(--pad);right:var(--pad);top:0;height:1px;background:linear-gradient(90deg,transparent,var(--motion-accent),transparent);opacity:0;pointer-events:none;transform:translateY(0)}
+.motion-section-scan.is-running{animation:motionSectionScan 3.4s var(--motion-ease) 1}
+@keyframes motionSectionScan{0%{opacity:0;transform:translateY(0)}14%{opacity:.5}78%{opacity:.22}100%{opacity:0;transform:translateY(min(60vh,520px))}}
+
+@media(max-width:900px){.motion-card-plane{width:38%;opacity:.42}.motion-card-rail{display:none}.motion-highlight{padding:90px var(--pad)}.motion-highlight__text{font-size:clamp(38px,11vw,72px)}.cube-webgl-hud{inset:14px}}
+@media(prefers-reduced-motion:reduce){.motion-char,.motion-blur-target{will-change:auto}.motion-section-scan{display:none}.motion-highlight__word{opacity:1}.motion-highlight__word.is-hot{color:inherit}.motion-card-plane{transform:none!important}}
