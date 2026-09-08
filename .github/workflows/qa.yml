@@ -19,6 +19,8 @@ jobs:
           node --check award.js
           node --check preloader-v2.js
           node --check language-lab.js
+          node --check motion-v2.js
+          node --input-type=module --check < lab-cube.js
 
       - name: Required production tree
         shell: python
@@ -27,6 +29,7 @@ jobs:
           required = [
               'index.html', '404.html', 'v5.css', 'v5.js', 'award.css', 'award.js',
               'preloader-v2.css', 'preloader-v2.js', 'language-lab.css', 'language-lab.js',
+              'motion-v2.css', 'motion-v2.js', 'lab-cube.js',
               'work/index.html', 'work/tracelab/index.html', 'work/decode/index.html',
               'work/3209/index.html', 'work/fusion360/index.html', 'work/web/index.html',
               'about/index.html', 'lab/index.html', 'contact/index.html',
@@ -39,9 +42,11 @@ jobs:
       - name: Award runtime wired
         run: |
           grep -q "import('./award.js')" v5.js
+          grep -q "import('./motion-v2.js')" award.js
           grep -q "MeshoptDecoder" v5.js
           grep -q "language-lab.js" index.html
-          echo "Award layer + 3D + language lab: OK"
+          grep -q "lab-cube.js" motion-v2.js
+          echo "Award layer + motion v2 + 3D + language lab: OK"
 
       - name: Localhost route smoke
         run: |
