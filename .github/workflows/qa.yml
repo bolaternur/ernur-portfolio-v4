@@ -29,7 +29,7 @@ jobs:
           required = [
               'index.html', '404.html', 'v5.css', 'v5.js', 'award.css', 'award.js',
               'preloader-v2.css', 'preloader-v2.js', 'language-lab.css', 'language-lab.js',
-              'motion-v2.css', 'motion-v2.js', 'lab-cube.js',
+              'motion-v2.css', 'motion-v2.js', 'lab-cube.js', 'typography-v3.css',
               'work/index.html', 'work/tracelab/index.html', 'work/decode/index.html',
               'work/3209/index.html', 'work/fusion360/index.html', 'work/web/index.html',
               'about/index.html', 'lab/index.html', 'contact/index.html',
@@ -43,10 +43,12 @@ jobs:
         run: |
           grep -q "import('./award.js')" v5.js
           grep -q "import('./motion-v2.js')" award.js
+          grep -q "typography-v3.css" motion-v2.css
+          grep -q "typography-v3.css" preloader-v2.css
           grep -q "MeshoptDecoder" v5.js
           grep -q "language-lab.js" index.html
           grep -q "lab-cube.js" motion-v2.js
-          echo "Award layer + motion v2 + 3D + language lab: OK"
+          echo "Award layer + motion v2 + typography v3 + 3D + language lab: OK"
 
       - name: Localhost route smoke
         run: |
