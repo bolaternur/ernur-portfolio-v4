@@ -1,3 +1,5 @@
+@import url('./typography-v3.css');
+
 :root{--boot-v2-ease:cubic-bezier(.52,.01,0,1)}
 html.preloader-v2-running,html.preloader-v2-running body{overflow:hidden}
 .boot.boot--cinematic{background:#0d0d0b;color:#f4f1ea;display:block;padding:0;overflow:hidden;opacity:1;visibility:visible;transition:visibility 0s 1.35s;transform:translateY(0)}
