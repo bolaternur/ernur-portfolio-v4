@@ -43,7 +43,7 @@ jobs:
           set -e
           rm -rf _site
           mkdir -p _site
-          cp index.html 404.html v5.css v5.js award.css award.js preloader-v2.css preloader-v2.js language-lab.css language-lab.js motion-v2.css motion-v2.js lab-cube.js _site/
+          cp index.html 404.html v5.css v5.js award.css award.js preloader-v2.css preloader-v2.js language-lab.css language-lab.js motion-v2.css motion-v2.js lab-cube.js typography-v3.css _site/
           cp -R work about lab contact _site/
           mkdir -p _site/assets/models/study _site/assets/models/robot _site/assets/models/fusion
 
