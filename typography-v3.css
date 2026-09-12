@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Instrument+Sans:wdth,wght@75..100,400..700&family=Instrument+Serif:ital@0;1&display=swap');
+
+/* ERNUR / TYPOGRAPHY V3
+   One dominant neo-grotesk, one restrained editorial serif, one coding mono.
+   The goal is hierarchy and personality, not a font-showcase on every section.
+*/
+:root{
+  --sans:'Instrument Sans','Helvetica Neue',Arial,sans-serif;
+  --display:'Instrument Sans','Helvetica Neue',Arial,sans-serif;
+  --serif:'Instrument Serif',Georgia,serif;
+  --mono:'Fragment Mono','SFMono-Regular',Consolas,monospace;
+  --type-ease:cubic-bezier(.52,.01,0,1);
+}
+
+html{font-kerning:normal;text-rendering:optimizeLegibility}
+body{font-family:var(--sans);font-synthesis:none;font-optical-sizing:auto}
+button,input,textarea{font-family:inherit}
+
+/* Core hierarchy ---------------------------------------------------------- */
+.display,.home-hero__copy h1,.menu-panel__links a,.contact-hero h1,.work-card h2,.project-row h3,.identity__statement,.language-stage__content h3,.language-lab__head strong{
+  font-family:var(--display);
+  font-optical-sizing:auto;
+  font-variation-settings:'wdth' 86,'wght' 540;
+  text-wrap:balance;
+  transition:font-variation-settings .7s var(--type-ease),letter-spacing .7s var(--type-ease);
+}
+.home-hero__copy h1{font-variation-settings:'wdth' 82,'wght' 555;letter-spacing:-.068em;line-height:.80}
+.display{font-variation-settings:'wdth' 84,'wght' 545;letter-spacing:-.064em}
+.display--small{font-variation-settings:'wdth' 88,'wght' 525;letter-spacing:-.052em}
+.identity__statement{font-variation-settings:'wdth' 91,'wght' 500;letter-spacing:-.050em}
+.work-card h2,.project-row h3{font-variation-settings:'wdth' 88,'wght' 535;letter-spacing:-.052em}
+.work-card:hover h2,.project-row:hover h3{font-variation-settings:'wdth' 96,'wght' 565;letter-spacing:-.045em}
+.menu-panel__links a:hover{font-variation-settings:'wdth' 94,'wght' 570}
+
+/* Reading copy becomes calmer and more premium. */
+.body-large,.body-copy,.section__copy,.case-intro__copy,.timeline p,.tech-card p,.work-card p,.project-row p{
+  font-family:var(--sans);
+  font-variation-settings:'wdth' 100,'wght' 420;
+  letter-spacing:-.016em;
+}
+.body-large{line-height:1.46}
+.body-copy{line-height:1.64}
+
+/* Editorial pulse: only key human / thesis sentences get serif contrast. */
+.page-hero__bottom .lead,.statement-band p,.home-hero__lead,.motion-highlight__text{
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:400;
+  letter-spacing:-.032em;
+  text-wrap:balance;
+}
+.home-hero__lead{font-size:clamp(20px,1.72vw,27px);line-height:1.27;max-width:560px}
+.page-hero__bottom .lead{line-height:.98;letter-spacing:-.040em}
+.statement-band p{line-height:.98;letter-spacing:-.037em}
+.motion-highlight__text{line-height:.96;letter-spacing:-.045em}
+
+/* Technical language ------------------------------------------------------ */
+.boot__label,.boot__value,.boot__phase,.site-nav__mini,.site-nav__menu,.eyebrow,.meta-row,.page-number,.mono,.section__bar,.identity__bar,.work-card__top,.project-row__num,.project-row__meta,.language-lab__head,.language-stage__meta,.language-stage__code,.motion-card-rail,.cube-webgl-hud,.award-readout{
+  font-family:var(--mono);
+  font-feature-settings:'calt' 1,'liga' 1,'ss07' 1;
+  letter-spacing:.055em;
+}
+.language-stage__code{font-size:9px;line-height:1.78}
+
+/* Python / C++ / Java each gets a typographic personality ---------------- */
+.language-node[data-language='python'] strong,.language-stage[data-active='python'] .language-stage__content h3{
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:400;
+  letter-spacing:-.035em;
+}
+.language-node[data-language='cpp'] strong,.language-stage[data-active='cpp'] .language-stage__content h3{
+  font-family:var(--mono);
+  font-style:normal;
+  font-weight:400;
+  letter-spacing:-.055em;
+}
+.language-node[data-language='java'] strong,.language-stage[data-active='java'] .language-stage__content h3{
+  font-family:var(--sans);
+  font-style:normal;
+  font-variation-settings:'wdth' 83,'wght' 650;
+  letter-spacing:-.060em;
+}
+.language-node strong{transition:font-variation-settings .55s var(--type-ease),transform .55s var(--type-ease),letter-spacing .55s var(--type-ease)}
+.language-node:hover strong,.language-node.is-active strong{transform:translateX(4px)}
+
+/* Hero language tokens become three different voices, still one system. */
+.lang-token[data-lang-target='python']{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.018em}
+.lang-token[data-lang-target='cpp']{font-family:var(--mono);font-style:normal;font-weight:400;letter-spacing:-.04em}
+.lang-token[data-lang-target='java']{font-family:var(--sans);font-style:normal;font-variation-settings:'wdth' 86,'wght' 630;letter-spacing:-.035em}
+
+/* Preloader becomes a miniature type specimen instead of three identical words. */
+.boot-v3__languages span:nth-child(1){font-family:var(--serif);font-style:italic;letter-spacing:-.055em}
+.boot-v3__languages span:nth-child(2){font-family:var(--mono);font-style:normal;letter-spacing:-.075em}
+.boot-v3__languages span:nth-child(3){font-family:var(--sans);font-style:normal;font-variation-settings:'wdth' 82,'wght' 650;letter-spacing:-.075em}
+.boot-v3__code{font-family:var(--mono);font-feature-settings:'calt' 1,'liga' 1,'ss07' 1}
+
+/* Numbers / metrics: sharper engineering cadence. */
+.metric strong,.language-stage__ghost{font-family:var(--sans);font-variation-settings:'wdth' 78,'wght' 560}
+.metric strong{letter-spacing:-.07em}
+
+/* Small labels should be legible, not hairline-thin. */
+.site-nav__mini,.site-nav__menu,.eyebrow,.section__bar,.page-hero__top,.work-card__top,.project-row__num,.project-row__meta{font-weight:400}
+
+/* Better line-breaking on large type. */
+.display,.home-hero__copy h1,.contact-hero h1,.identity__statement,.motion-highlight__text{overflow-wrap:normal;word-break:normal;hyphens:none}
+
+@media(max-width:900px){
+  .home-hero__copy h1{font-variation-settings:'wdth' 88,'wght' 555;letter-spacing:-.060em}
+  .display{font-variation-settings:'wdth' 90,'wght' 540;letter-spacing:-.055em}
+  .page-hero__bottom .lead{line-height:1.02}
+  .language-stage[data-active='cpp'] .language-stage__content h3{font-size:clamp(50px,14vw,92px)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .display,.home-hero__copy h1,.menu-panel__links a,.contact-hero h1,.work-card h2,.project-row h3,.language-node strong{transition:none}
+}
