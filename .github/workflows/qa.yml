@@ -1,62 +1,34 @@
 name: Portfolio QA
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
-
 jobs:
   static-qa:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: JavaScript syntax
         run: |
-          node --check v5.js
-          node --check award.js
-          node --check preloader-v2.js
-          node --check language-lab.js
-          node --check motion-v2.js
-          node --input-type=module --check < lab-cube.js
-
-      - name: Required production tree
-        shell: python
-        run: |
-          from pathlib import Path
-          required = [
-              'index.html', '404.html', 'v5.css', 'v5.js', 'award.css', 'award.js',
-              'preloader-v2.css', 'preloader-v2.js', 'language-lab.css', 'language-lab.js',
-              'motion-v2.css', 'motion-v2.js', 'lab-cube.js', 'typography-v3.css',
-              'work/index.html', 'work/tracelab/index.html', 'work/decode/index.html',
-              'work/3209/index.html', 'work/fusion360/index.html', 'work/web/index.html',
-              'about/index.html', 'lab/index.html', 'contact/index.html',
-          ]
-          missing = [p for p in required if not Path(p).exists()]
-          if missing:
-              raise SystemExit('Missing production files: ' + ', '.join(missing))
-          print('Production tree: OK')
-
-      - name: Award runtime wired
-        run: |
-          grep -q "import('./award.js')" v5.js
-          grep -q "import('./motion-v2.js')" award.js
-          grep -q "typography-v3.css" motion-v2.css
-          grep -q "typography-v3.css" preloader-v2.css
-          grep -q "MeshoptDecoder" v5.js
-          grep -q "language-lab.js" index.html
-          grep -q "lab-cube.js" motion-v2.js
-          echo "Award layer + motion v2 + typography v3 + 3D + language lab: OK"
-
+          node --check portfolio.js
+          node --check model-viewer.js
+          node --check scripts/build.mjs
+          node --check scripts/serve.mjs
+      - name: Verify routes and production assets
+        run: npm test
+      - name: Build clean site
+        run: npm run build
       - name: Localhost route smoke
         run: |
-          python3 -m http.server 8080 >/tmp/ernur-http.log 2>&1 &
+          PORT=8080 node scripts/serve.mjs dist > /tmp/ernur-http.log 2>&1 &
           SERVER_PID=$!
+          trap 'kill "$SERVER_PID"' EXIT
           sleep 2
           for route in / /work/ /work/tracelab/ /work/decode/ /work/3209/ /work/fusion360/ /work/web/ /about/ /lab/ /contact/ /404.html; do
-            curl --fail --silent --show-error "http://127.0.0.1:8080${route}" >/dev/null
+            curl --fail --silent --show-error "http://127.0.0.1:8080${route}" > /dev/null
           done
-          kill $SERVER_PID
-          echo "Localhost route smoke: OK"

@@ -1,52 +1,61 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#11110f" />
-  <meta name="description" content="Ernur's personal lab — cubing, chess, sports, coding and 3D modeling." />
-  <title>Lab — Ernur</title>
-  <link rel="stylesheet" href="../v5.css" />
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"}}</script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script><script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101111">
+  <meta name="description" content="Cubing, chess, sport and experiments: the interests that shape how Ernur thinks and builds.">
+  <title>Personal lab · Ernur</title>
+  <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../portfolio.css">
+  <link rel="stylesheet" href="../inner.css">
+  <script src="../portfolio.js" defer></script>
 </head>
-<body data-base="../" data-page="lab">
-  <div class="boot" aria-live="polite"><div class="boot__label">LAB / PERSONAL <span class="boot__phase">route</span></div><div class="boot__track"><span></span></div><span class="boot__value">00</span></div>
-  <div class="route-transition" aria-hidden="true"><span class="route-transition__name">Lab</span><span class="route-transition__meta">curiosity / play</span></div>
-  <header class="site-nav"><a class="site-nav__mark" href="../" data-transition-title="home">E<span>/</span>26</a><div class="site-nav__right"><nav class="site-nav__mini"><a href="../work/" data-transition-title="work">work</a><a href="../about/" data-transition-title="about">about</a><a href="https://github.com/bolaternur" target="_blank" rel="noreferrer">github ↗</a></nav><button class="site-nav__menu" data-menu-button aria-expanded="false">menu</button></div></header>
-  <aside class="menu-panel"><nav class="menu-panel__links"><a href="../" data-transition-title="home"><small>00</small>Home</a><a href="../work/" data-transition-title="work"><small>01</small>Work</a><a href="../about/" data-transition-title="about"><small>02</small>About</a><a href="./" data-transition-title="lab"><small>03</small>Lab</a><a href="../contact/" data-transition-title="contact"><small>04</small>Contact</a></nav><div class="menu-panel__aside">Personal lab<br />Cubing · Chess · Sport<br />Code · 3D</div></aside>
+<body class="inner-page " data-base="../">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header container">
+  <a class="brand" href="../" aria-label="Ernur, home">Ernur<span>®</span></a>
+  <nav class="header-nav" aria-label="Main navigation"><a href="../work/">Work</a><a href="../about/">About</a><a href="../lab/" aria-current="page">Lab</a></nav>
+  <a class="contact-link" href="../contact/">Get in touch <span aria-hidden="true">↗</span></a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu"><span></span><span></span></button>
+</header>
+<aside id="site-menu" class="site-menu" hidden>
+  <nav aria-label="Mobile navigation">
+    <a href="../">Home</a>
+    <a href="../work/">Work</a>
+    <a href="../about/">About</a>
+    <a href="../lab/">Lab</a>
+    <a href="../contact/">Contact</a>
+    <a href="https://github.com/bolaternur" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+  </nav>
+</aside>
+<main id="main">
 
-  <main>
-    <section class="page-hero page-hero--dark">
-      <div class="page-hero__top"><span>03 / Personal lab</span><span>Curiosity outside projects</span></div>
-      <h1 class="display">Play is<br />part of the<br />process.</h1>
-      <div class="page-hero__bottom"><p class="lead">Not everything needs a client, a competition or a deliverable.</p><p class="body-large" style="color:rgba(244,241,234,.56)">Football, basketball, chess, coding, 3D modeling and cubing all exercise a different kind of attention.</p></div>
-    </section>
+<section class="inner-hero container lab-hero">
+  <p class="section-label">The personal lab</p>
+  <h1 class="inner-title">A little play.<br><em>A lot of curiosity.</em></h1>
+  <div class="inner-intro"><p>Not every interest needs a finished project. Sometimes the point is to explore, make a move and see what happens.</p></div>
+</section>
+<div class="container"><section class="lab-cube-panel reveal" aria-labelledby="cubing-title">
+  <div class="lab-cube-copy"><p class="section-label">Algorithms, in your hands</p><h2 id="cubing-title">Fifteen ways<br>to think.</h2><p>My collection includes around fifteen cube variants. I like the combination of patterns, memory and physical feedback.</p><p>This academic year, I'm taking the role of <strong>Cubing Club Owner</strong> and sharing that interest with other students.</p></div>
+  <div class="lab-cube-stage"><div class="lab-cube" data-cube aria-hidden="true"><div class="lab-cube__face lab-cube__face--front"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="lab-cube__face lab-cube__face--back"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="lab-cube__face lab-cube__face--right"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="lab-cube__face lab-cube__face--left"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="lab-cube__face lab-cube__face--top"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="lab-cube__face lab-cube__face--bottom"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><button type="button" data-cube-turn>Rotate cube <span aria-hidden="true">↻</span></button></div>
+  <p class="cube-status" data-cube-status aria-live="polite"></p>
+</section></div>
+<section class="inner-section container" style="border-top:0">
+  <div class="hobby-editorial"><div><p class="section-label">Beyond engineering</p><h2 class="inner-heading">Different ways<br><em>to pay attention.</em></h2></div><dl class="hobby-list">
+    <div><dt>Chess</dt><dd>A reason to slow down, recognize patterns and think a few moves ahead.</dd></div>
+    <div><dt>Football &amp; basketball</dt><dd>Movement, teamwork and decisions that happen in the moment.</dd></div>
+    <div><dt>3D modeling</dt><dd>A way to turn an idea into something with space, shape and structure.</dd></div>
+    <div><dt>Coding</dt><dd>Still my favorite way to experiment, whether it becomes a project or stays a small discovery.</dd></div>
+  </dl></div>
+</section>
+<section class="inner-section container"><div class="inner-section-head"><p class="section-label">Back to building</p><h2 class="inner-heading">Play feeds<br><em>the process.</em></h2></div><div class="inner-split"><div></div><div class="inner-body"><p>Cubing turns algorithms into muscle memory. Chess makes me plan. Sport makes me react. Those different ways of thinking find their way back into how I code and build.</p><a class="text-link" href="../work/">See what that becomes <span aria-hidden="true">↗</span></a></div></div></section>
 
-    <section class="cube-lab">
-      <div class="cube-lab__copy" data-reveal><p class="eyebrow" style="color:rgba(244,241,234,.45)">Cubing / collection</p><h2>15 cube<br />variants.</h2><p>I collect twisty puzzles because they combine algorithms, pattern recognition, memory and physical feedback. The collection currently includes around fifteen different cube variants.</p><p>This academic year I’m taking the role of <strong>Cubing Club Owner</strong>.</p></div>
-      <div class="cube-scene" aria-label="Interactive abstract cube"><div class="cube"><div class="cube-face cube-face--front"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cube-face cube-face--back"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cube-face cube-face--right"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cube-face cube-face--left"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cube-face cube-face--top"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cube-face cube-face--bottom"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
-    </section>
-
-    <section class="section">
-      <div class="section__bar"><span>Hobbies</span><span>Different kinds of thinking</span></div>
-      <div class="hobby-grid" data-reveal-group>
-        <div class="hobby"><small>movement / teamwork</small><h3>Football</h3></div>
-        <div class="hobby"><small>speed / coordination</small><h3>Basketball</h3></div>
-        <div class="hobby"><small>strategy / patterns</small><h3>Chess</h3></div>
-        <div class="hobby"><small>logic / creation</small><h3>Coding</h3></div>
-        <div class="hobby"><small>space / geometry</small><h3>3D Modeling</h3></div>
-        <div class="hobby"><small>algorithms / hands</small><h3>Cubing</h3></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section__bar"><span>Why it belongs here</span><span>Portfolio ≠ résumé only</span></div>
-      <div class="section__grid section__grid--wide"><h2 class="display display--small" data-reveal>Curiosity has<br />more than one<br />output.</h2><div class="section__copy body-large" data-reveal><p>Chess makes me slow down and plan. Sport makes decisions immediate. Cubing turns algorithms into muscle memory. 3D modeling turns an idea into space.</p><p class="muted">Those modes of thinking feed back into the way I code and build.</p></div></div>
-    </section>
-
-    <section class="contact-hero"><p class="eyebrow" style="color:rgba(244,241,234,.48)">Back to engineering</p><h1>Now<br />build.</h1><div class="contact-hero__actions"><a href="../work/" data-transition-title="work">Selected work ↗</a><a href="../about/" data-transition-title="about">About ↗</a><a href="https://github.com/bolaternur" target="_blank" rel="noreferrer">GitHub ↗</a></div></section>
-  </main>
-  <script type="module" src="../v5.js"></script>
+</main>
+<footer class="footer container">
+  <div class="footer-top"><h2>Have something<br>in mind?</h2><a class="pill-link" href="../contact/">Get in touch <span aria-hidden="true">↗</span></a></div>
+  <a class="footer-wordmark" href="../" aria-label="Ernur, back to home">Ernur<span>.</span></a>
+  <div class="footer-bottom"><span>© 2026 Ernur</span><span>Almaty, Kazakhstan</span><a href="https://github.com/bolaternur" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a href="#main">Back to top <span aria-hidden="true">↑</span></a></div>
+</footer>
 </body>
 </html>
