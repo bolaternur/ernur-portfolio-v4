@@ -1,4 +1,4 @@
-/** Progressive enhancement: no WebGL code or model is downloaded before a click. */
+/** Progressive 3D: load near the viewport, retain posters and a retry button. */
 const MODELS = {
   robot: { name: "DECODE Simple Bot", yaw: -0.45, pitch: -1.05 },
   study: { name: "3209 Mechanical Study", yaw: -0.55, pitch: -1.05 },
@@ -9,7 +9,7 @@ const controllers = new Map();
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 let libraryPromise;
 
-function libraries() {
+export function libraries() {
   libraryPromise ||= import("./assets/vendor/three-viewer.js").catch(
     (error) => {
       libraryPromise = null;
@@ -170,6 +170,8 @@ function prepareStage(THREE, canvas, model, options) {
   let frameId = 0;
   let lastTime = 0;
   let distance = 5;
+  let scrollPose = null;
+  let motionPaused = document.documentElement.classList.contains('motion-paused');
 
   function fit() {
     const { width, height } = canvas.getBoundingClientRect();
@@ -204,7 +206,10 @@ function prepareStage(THREE, canvas, model, options) {
     }
     const delta = lastTime ? Math.min((time - lastTime) / 1000, 0.05) : 0;
     lastTime = time;
-    if (spinning && !motionPreference.matches) orbit.rotation.y += delta * 0.22;
+    if (scrollPose && !motionPreference.matches && !motionPaused) {
+      orbit.rotation.y += (scrollPose.yaw - orbit.rotation.y) * Math.min(1, delta * 9);
+      orbit.rotation.x += (scrollPose.pitch - orbit.rotation.x) * Math.min(1, delta * 9);
+    } else if (spinning && !motionPreference.matches && !motionPaused) orbit.rotation.y += delta * 0.22;
     if (Math.abs(targetExplosion - explosion) > 0.001) {
       explosion = motionPreference.matches
         ? targetExplosion
@@ -215,7 +220,7 @@ function prepareStage(THREE, canvas, model, options) {
     }
     renderer.render(scene, camera);
     if (
-      (spinning && !motionPreference.matches) ||
+      ((spinning || scrollPose) && !motionPreference.matches && !motionPaused) ||
       explosion !== targetExplosion
     )
       requestRender();
@@ -234,6 +239,7 @@ function prepareStage(THREE, canvas, model, options) {
   }
 
   function reset() {
+    scrollPose = null;
     orbit.rotation.set(options.pitch, options.yaw, 0);
     zoom = 1;
     explosion = 0;
@@ -263,6 +269,7 @@ function prepareStage(THREE, canvas, model, options) {
   const onMotion = () => {
     if (motionPreference.matches) {
       spinning = false;
+      scrollPose = null;
       explosion = targetExplosion;
       applyExplosion(explosion);
       options.onRotate(false);
@@ -274,6 +281,11 @@ function prepareStage(THREE, canvas, model, options) {
 
   const input = new AbortController();
   const listenerOptions = { signal: input.signal };
+  window.addEventListener('portfolio-motion', event => {
+    motionPaused = event.detail.paused;
+    if (motionPaused) { pause(); explosion = targetExplosion; applyExplosion(explosion); }
+    requestRender();
+  }, listenerOptions);
   let pointer = null;
   canvas.style.touchAction = "pan-y";
   canvas.addEventListener(
@@ -284,6 +296,7 @@ function prepareStage(THREE, canvas, model, options) {
       pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
       canvas.setPointerCapture(event.pointerId);
       spinning = false;
+      scrollPose = null;
       options.onRotate(false);
     },
     listenerOptions,
@@ -347,7 +360,17 @@ function prepareStage(THREE, canvas, model, options) {
 
   fit();
   return {
+    scrub(progress) {
+      if (motionPreference.matches || motionPaused) return;
+      const smooth = (t) => { t = THREE.MathUtils.clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+      targetExplosion = smooth((progress - 0.16) / 0.28) * (1 - smooth((progress - 0.7) / 0.26));
+      zoom = 1 + targetExplosion * 0.18;
+      updateCamera();
+      scrollPose = { yaw: options.yaw + progress * Math.PI * 1.7, pitch: options.pitch + Math.sin(progress * Math.PI) * 0.32 };
+      requestRender();
+    },
     rotate() {
+      scrollPose = null;
       if (motionPreference.matches) {
         orbit.rotation.y += Math.PI / 6;
         spinning = false;
@@ -419,7 +442,7 @@ function installViewer(element) {
   if (status) status.setAttribute("aria-live", "polite");
   element.dataset.modelState = "idle";
 
-  async function load() {
+  async function load(manual = false) {
     if (loading || stage || disposed) return;
     loading = true;
     trigger.disabled = true;
@@ -469,7 +492,11 @@ function installViewer(element) {
       });
       resetButtons();
       say("Model ready. Drag or use arrow keys to rotate. + / − to zoom.");
-      canvas.focus({ preventScroll: true });
+      if (manual) canvas.focus({ preventScroll: true });
+      if (!motionPreference.matches) {
+        if (element.closest('[data-assembly-story]')) updateScroll();
+        else setPressed('rotate', stage.rotate());
+      }
     } catch (error) {
       if (disposed) return;
       disposeObject(loadedModel);
@@ -494,7 +521,25 @@ function installViewer(element) {
     }
   }
 
-  trigger.addEventListener("click", load, { signal: events.signal });
+  const story = element.closest('[data-assembly-story]');
+  function updateScroll() {
+    if (!story || !stage || motionPreference.matches) return;
+    const rect = story.getBoundingClientRect();
+    const progress = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height - innerHeight)));
+    stage.scrub(progress);
+    story.style.setProperty('--story-progress', progress);
+    const phase = progress < 0.22 ? 0 : progress < 0.66 ? 1 : 2;
+    story.querySelectorAll('[data-assembly-phase]').forEach((item, index) => item.classList.toggle('is-active', index === phase));
+  }
+  if (story) window.addEventListener('scroll', updateScroll, { passive: true, signal: events.signal });
+  const autoLoad = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting && !motionPreference.matches) {
+      autoLoad.disconnect();
+      load();
+    }
+  }, { rootMargin: '240px' });
+  autoLoad.observe(element);
+  trigger.addEventListener("click", () => load(true), { signal: events.signal });
   actions.forEach((button) =>
     button.addEventListener(
       "click",
@@ -533,6 +578,7 @@ function installViewer(element) {
     dispose() {
       disposed = true;
       request?.abort();
+      autoLoad.disconnect();
       events.abort();
       stage?.dispose();
       canvas.hidden = true;

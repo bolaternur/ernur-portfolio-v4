@@ -39,6 +39,7 @@
       fetchpriority="high"
     />
     <link rel="stylesheet" href="./portfolio.css" />
+    <link rel="stylesheet" href="./immersive.css" />
     <script src="./portfolio.js" defer></script>
   </head>
   <body data-base="./" data-page="home">
@@ -80,6 +81,8 @@
           fetchpriority="high"
         />
         <div class="hero-shade"></div>
+        <div class="hero-sculpture" data-motion-scene="orbit" aria-hidden="true"></div>
+        <span class="hero-sculpture-label" aria-hidden="true">CURIOUS BY NATURE · ALWAYS IN ORBIT</span>
         <div class="hero-intro">
           <p class="hero-line">A curious mind.<br />A builder at heart.</p>
           <p class="hero-description">
@@ -107,6 +110,29 @@
               <b aria-hidden="true">↗</b></span
             ></a
           >
+        </div>
+      </section>
+      <section class="assembly-story" data-assembly-story aria-labelledby="assembly-title">
+        <div class="assembly-sticky">
+          <div class="assembly-copy">
+            <p class="section-label">From an idea to a mechanism</p>
+            <h2 id="assembly-title">Every part.<br />A purpose.</h2>
+            <p>A closer look at my DECODE robot. Scroll to explore how the assembly comes together.</p>
+            <a class="text-link" href="./work/decode/">Explore the project <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="assembly-view" data-model-viewer>
+            <div class="assembly-ghost" aria-hidden="true">DECODE</div>
+            <img class="assembly-poster" src="./public/images/robot.webp" alt="DECODE Simple Bot assembly" width="1200" height="1000" loading="lazy" />
+            <canvas data-model="robot" hidden></canvas>
+            <button class="pill-link assembly-load" data-load-model type="button">Explore 3D model ↗</button>
+            <p class="assembly-status" data-model-status>Original CAD assembly · Interactive 3D</p>
+          </div>
+          <ol class="assembly-phases" aria-label="Assembly sequence">
+            <li data-assembly-phase class="is-active"><span>01</span> Inspect</li>
+            <li data-assembly-phase><span>02</span> Separate</li>
+            <li data-assembly-phase><span>03</span> Rebuild</li>
+          </ol>
+          <div class="assembly-track" aria-hidden="true"><span></span></div>
         </div>
       </section>
       <section class="intro-section container">
@@ -376,6 +402,7 @@
       </section>
       <section class="personal-section container reveal">
         <div class="personal-art" aria-hidden="true">
+          <div class="personal-cube" data-motion-scene="cube"></div>
           <div class="puzzle-grid">
             <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
           </div>

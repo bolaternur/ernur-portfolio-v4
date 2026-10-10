@@ -1,0 +1,74 @@
+.motion-canvas { display: block; width: 100%; height: 100%; }
+.hero-sculpture { position: absolute; width: 63%; height: 91%; right: -1%; top: -4%; z-index: -1; pointer-events: none; }
+.hero:has(.has-motion-scene) .hero-image { opacity: .22; transition: opacity 1.4s; }
+.hero-sculpture-label { position: absolute; right: 6%; top: 69%; font-size: 9px; letter-spacing: .18em; opacity: .65; }
+.motion-toggle { position: fixed; right: 22px; bottom: 20px; z-index: 25; padding: 10px 15px; border: 1px solid #ffffff25; border-radius: 30px; background: #171b17e8; color: #dfe8d5; font: inherit; font-size: 10px; letter-spacing: .04em; cursor: pointer; }
+.motion-toggle:hover { border-color: #d9f279; }
+.motion-toggle:focus-visible { outline: 2px solid #d9f279; outline-offset: 4px; }
+body.menu-open .motion-toggle { visibility: hidden; }
+.assembly-story { height: 280svh; position: relative; background: #121514; }
+.assembly-sticky { position: sticky; top: 0; height: 100svh; min-height: 600px; overflow: hidden; display: grid; grid-template-columns: 31% 69%; align-items: center; padding: 5vh var(--pad) 90px; }
+.assembly-copy { z-index: 2; position: relative; }
+.assembly-copy h2 { font-size: clamp(40px, 5.4vw, 86px); line-height: .99; letter-spacing: -.065em; font-weight: 500; margin: 24px 0; }
+.assembly-copy > p:not(.section-label) { max-width: 265px; color: #a2a7a4; font-size: 14px; line-height: 1.7; }
+.assembly-copy .text-link { margin-top: 28px; }
+.assembly-view { height: 78svh; min-height: 380px; width: 100%; position: relative; }
+.assembly-view canvas, .assembly-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.assembly-view canvas { z-index: 1; cursor: grab; }
+.assembly-view canvas:active { cursor: grabbing; }
+.assembly-view canvas[hidden], .assembly-load[hidden] { display: none; }
+.assembly-view canvas:focus-visible { outline: 1px solid var(--accent); outline-offset: -10px; }
+.assembly-view.is-loaded .assembly-poster { opacity: 0; }
+.assembly-poster { transition: opacity .6s; pointer-events: none; }
+.assembly-ghost { position: absolute; top: 13%; width: 100%; text-align: center; font-size: clamp(65px, 13vw, 200px); font-weight: 650; letter-spacing: -.09em; color: #222825; }
+.assembly-load { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 3; background: #212921; white-space: nowrap; }
+.assembly-load:active { transform: translateX(-50%) scale(.97); }
+.assembly-status { position: absolute; bottom: 0; text-align: center; width: 100%; color: #b2b9b1; font-size: 10px; z-index: 2; pointer-events: none; }
+.assembly-phases { position: absolute; bottom: 36px; left: var(--pad); right: var(--pad); padding: 0; margin: 0; display: flex; gap: 50px; list-style: none; }
+.assembly-phases li { color: #7e8981; font-size: 13px; transition: color .4s; }
+.assembly-phases li.is-active { color: var(--accent); }
+.assembly-phases span { font-size: 10px; margin-right: 12px; }
+.assembly-track { position: absolute; bottom: 14px; left: var(--pad); right: var(--pad); height: 1px; background: #3b453d; }
+.assembly-track span { display: block; width: 100%; height: 2px; background: var(--accent); transform: scaleX(var(--story-progress, 0)); transform-origin: left; }
+.personal-cube { position: absolute; inset: 0; z-index: 2; }
+.personal-art:has(.has-motion-scene) .puzzle-grid { visibility: hidden; }
+.cube-motion-host { position: absolute; inset: 0 0 85px; z-index: 1; }
+.lab-cube-stage { position: relative; }
+.has-cube-scene .lab-cube { visibility: hidden; }
+.lab-cube-stage > button { position: absolute; bottom: 28px; z-index: 3; }
+.project-art { transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)); transition: transform .45s cubic-bezier(.2,.8,.2,1); }
+@media (prefers-reduced-motion: no-preference) {
+  .orbit-mark { animation: orbit-turn 24s linear infinite; }
+  .evidence-node { animation: evidence-pulse 2.8s ease-in-out infinite; }
+  .project-art img { transition: transform .8s cubic-bezier(.2,.8,.2,1); }
+  .project-card:hover .project-art img { transform: translateY(-10px) scale(1.06); }
+  @keyframes orbit-turn { to { transform: rotate(360deg); } }
+  @keyframes evidence-pulse { 50% { box-shadow: 0 0 0 10px #d9f27900, 0 0 24px #d9f27970; opacity: .55; } }
+}
+.motion-paused .orbit-mark, .motion-paused .evidence-node { animation-play-state: paused; }
+.motion-paused .project-art { transform: none; }
+@media (max-width: 760px) {
+  .hero-sculpture { width: 110%; height: 50%; right: -24%; top: 32%; opacity: .9; }
+  .hero-sculpture-label { display: none; }
+  .hero-intro { position: relative; z-index: 1; }
+  .hero-line, .hero-description { text-shadow: 0 2px 24px #050705; }
+  .hero-bottom { z-index: 1; }
+  .assembly-story { height: 240svh; }
+  .assembly-sticky { display: block; min-height: 570px; padding-top: 6svh; }
+  .assembly-copy h2 { font-size: 44px; margin: 16px 0; }
+  .assembly-copy > p:not(.section-label) { font-size: 12px; max-width: 285px; }
+  .assembly-copy .text-link { margin-top: 12px; font-size: 12px; }
+  .assembly-view { height: calc(100svh - 365px); min-height: 235px; width: calc(100% + 30px); margin-left: -15px; }
+  .assembly-ghost { font-size: 24vw; top: 20%; }
+  .assembly-phases { gap: 25px; bottom: 33px; }
+  .assembly-phases li { font-size: 11px; }
+  .assembly-phases span { margin-right: 6px; }
+  .assembly-status { font-size: 9px; bottom: 10px; }
+  .motion-toggle { right: 12px; bottom: 10px; padding: 8px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .assembly-story { height: auto; }
+  .assembly-sticky { position: relative; }
+  .assembly-phases, .assembly-track { display: none; }
+  .project-art { transform: none; transition: none; }
+}

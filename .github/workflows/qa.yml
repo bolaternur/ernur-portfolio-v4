@@ -17,6 +17,7 @@ jobs:
         run: |
           node --check portfolio.js
           node --check model-viewer.js
+          node --check immersive.js
           node --check scripts/build.mjs
           node --check scripts/serve.mjs
       - name: Verify routes and production assets
