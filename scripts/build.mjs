@@ -17,6 +17,8 @@ for (const path of [
   "portfolio.js",
   "inner.css",
   "model-viewer.js",
+  "immersive.js",
+  "immersive.css",
   "about",
   "work",
   "lab",

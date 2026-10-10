@@ -1,4 +1,4 @@
-/* Small, dependency-free shared interactions. The 3D engine loads only on request. */
+/* Shared navigation and content interactions, with progressive viewport-loaded 3D. */
 (() => {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const menu = document.querySelector("#site-menu");
@@ -153,6 +153,7 @@
 
   let cubeTurns = 0;
   document.querySelector("[data-cube-turn]")?.addEventListener("click", () => {
+    if (document.querySelector('.has-cube-scene')) return;
     cubeTurns += 1;
     const cube = document.querySelector(".lab-cube, .cube, [data-cube]");
     if (cube)
@@ -168,5 +169,8 @@
           "The 3D viewer could not start. Reload this page to try again.";
       });
     });
+  }
+  if (document.querySelector('[data-motion-scene], [data-model-viewer]')) {
+    import('./immersive.js').catch(error => console.warn('Motion enhancement unavailable.', error));
   }
 })();
