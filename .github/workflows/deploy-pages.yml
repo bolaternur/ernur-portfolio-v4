@@ -1,75 +1,31 @@
-name: Deploy final portfolio to GitHub Pages
-
+name: Deploy portfolio to GitHub Pages
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: pages
   cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout final source
-        uses: actions/checkout@v4
-
-      - name: Verify permanent 3D source assets
-        run: |
-          set -e
-          test -f "source-assets/3209-0001-0007.glb"
-          test -f "source-assets/DECODE Simple Bot.glb"
-          test -f "source-assets/Main Assembly.glb"
-          test -f "source-assets/kicker_insert.glb"
-          echo "All four source GLB files are present."
-
-      - name: Install gltfpack
-        run: |
-          set -e
-          curl -L --fail --retry 3 -o /tmp/gltfpack.zip "https://github.com/zeux/meshoptimizer/releases/download/v1.2/gltfpack-ubuntu.zip"
-          unzip -q /tmp/gltfpack.zip -d /tmp/gltfpack
-          chmod +x /tmp/gltfpack/gltfpack
-          /tmp/gltfpack/gltfpack -v
-
-      - name: Build clean production site
-        run: |
-          set -e
-          rm -rf _site
-          mkdir -p _site
-          cp index.html 404.html v5.css v5.js award.css award.js preloader-v2.css preloader-v2.js language-lab.css language-lab.js motion-v2.css motion-v2.js lab-cube.js typography-v3.css _site/
-          cp -R work about lab contact _site/
-          mkdir -p _site/assets/models/study _site/assets/models/robot _site/assets/models/fusion
-
-          # Keep gltfpack's geometry/scene optimization, but do NOT use EXT_meshopt_compression
-          # for the public files. This makes the four GLBs load reliably in every browser and
-          # when cached by GitHub Pages, while -kn/-km preserve the named engineering hierarchy
-          # used by the DECODE inspect -> separate -> understand -> rebuild choreography.
-          /tmp/gltfpack/gltfpack -i "source-assets/3209-0001-0007.glb" -o "_site/assets/models/study/3209-0001-0007.glb" -kn -km
-          /tmp/gltfpack/gltfpack -i "source-assets/DECODE Simple Bot.glb" -o "_site/assets/models/robot/DECODE Simple Bot.glb" -kn -km
-          /tmp/gltfpack/gltfpack -i "source-assets/Main Assembly.glb" -o "_site/assets/models/fusion/Main Assembly.glb" -kn -km
-          /tmp/gltfpack/gltfpack -i "source-assets/kicker_insert.glb" -o "_site/assets/models/fusion/kicker_insert.glb" -kn -km
-
-          touch _site/.nojekyll
-          echo "Production GLB sizes:"
-          du -h _site/assets/models/*/*.glb
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          enablement: true
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+          node-version: 22
+      - name: Verify pages and assets
+        run: npm test
+      - name: Build production site
+        run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
         with:
-          path: _site
-
+          path: dist
   deploy:
     environment:
       name: github-pages

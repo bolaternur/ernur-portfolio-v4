@@ -5,3 +5,16 @@ assets/models/study/*.glb
 # OS
 .DS_Store
 Thumbs.db
+
+# Local previews and QA artifacts
+dist/
+.playwright-cli/
+node_modules/
+before-home.png
+after-*.png
+qa-*.png
+lighthouse*.json
+lighthouse*.html
+public/images/*.png
+output/
+tools/qa-*.js

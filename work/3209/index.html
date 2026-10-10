@@ -1,48 +1,59 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#eeebe4" />
-  <meta name="description" content="3209 mechanical 3D study by Ernur." />
-  <title>3209 Mechanical Study — Ernur</title>
-  <link rel="stylesheet" href="../../v5.css" />
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"}}</script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script><script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101111">
+  <meta name="description" content="A 3D mechanical study exploring the shape, proportions and structure of model 3209-0001-0007.">
+  <title>3209 Mechanical Study · Ernur</title>
+  <link rel="icon" href="../../public/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../portfolio.css">
+  <link rel="stylesheet" href="../../inner.css">
+  <script src="../../portfolio.js" defer></script>
 </head>
-<body data-base="../../" data-page="3209">
-  <div class="boot" aria-live="polite"><div class="boot__label">3209 / STUDY <span class="boot__phase">loading study</span></div><div class="boot__track"><span></span></div><span class="boot__value">00</span></div>
-  <div class="route-transition" aria-hidden="true"><span class="route-transition__name">3209</span><span class="route-transition__meta">mechanical study</span></div>
-  <header class="site-nav"><a class="site-nav__mark" href="../../" data-transition-title="home">E<span>/</span>26</a><div class="site-nav__right"><nav class="site-nav__mini"><a href="../" data-transition-title="work">work</a><a href="../../about/" data-transition-title="about">about</a><a href="https://github.com/bolaternur" target="_blank" rel="noreferrer">github ↗</a></nav><button class="site-nav__menu" data-menu-button aria-expanded="false">menu</button></div></header>
-  <aside class="menu-panel"><nav class="menu-panel__links"><a href="../../" data-transition-title="home"><small>00</small>Home</a><a href="../" data-transition-title="work"><small>01</small>Work</a><a href="../../about/" data-transition-title="about"><small>02</small>About</a><a href="../../lab/" data-transition-title="lab"><small>03</small>Lab</a><a href="../../contact/" data-transition-title="contact"><small>04</small>Contact</a></nav><div class="menu-panel__aside">3209-0001-0007<br />camera / silhouette<br />technical inspection</div></aside>
+<body class="inner-page " data-base="../../">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header container">
+  <a class="brand" href="../../" aria-label="Ernur, home">Ernur<span>®</span></a>
+  <nav class="header-nav" aria-label="Main navigation"><a href="../../work/" aria-current="page">Work</a><a href="../../about/">About</a><a href="../../lab/">Lab</a></nav>
+  <a class="contact-link" href="../../contact/">Get in touch <span aria-hidden="true">↗</span></a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu"><span></span><span></span></button>
+</header>
+<aside id="site-menu" class="site-menu" hidden>
+  <nav aria-label="Mobile navigation">
+    <a href="../../">Home</a>
+    <a href="../../work/">Work</a>
+    <a href="../../about/">About</a>
+    <a href="../../lab/">Lab</a>
+    <a href="../../contact/">Contact</a>
+    <a href="https://github.com/bolaternur" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+  </nav>
+</aside>
+<main id="main">
 
-  <main>
-    <section class="page-hero">
-      <div class="page-hero__top"><span>03 / 3D mechanical study</span><span>Perspective → profile → alignment</span></div>
-      <h1 class="display">3209.</h1>
-      <div class="page-hero__bottom"><p class="lead">A quieter 3D chapter where the camera does most of the storytelling.</p><p class="body-large muted">Instead of another exploded animation, this model is treated like an object on an engineering inspection table: rotate, align, compare proportions.</p></div>
-    </section>
+<section class="inner-hero container">
+  <p class="section-label">3D mechanical study</p><h1 class="inner-title">3209.<br><em>A different perspective.</em></h1>
+  <div class="inner-intro"><p>A quieter way to understand a machine: turn it, study its silhouette and notice how the parts line up.</p><a class="text-link" href="../">All work <span aria-hidden="true">↗</span></a></div>
+  <div class="inner-meta"><span><strong>Model</strong> 3209-0001-0007</span><span><strong>Focus</strong> Technical inspection</span></div>
+</section>
+<div class="case-visual container"><div class="model-viewer" data-model-viewer>
+  <div class="model-caption"><strong>3209</strong><span>Interactive CAD model</span></div>
+  <div class="model-idle" aria-hidden="true"><span>3209</span></div>
+  <img class="model-poster" src="../../public/images/study.webp" alt="3209 mechanical assembly" width="1200" height="900" loading="lazy">
+  <canvas data-model="study" aria-label="Interactive 3D view of 3209"></canvas>
+  <button type="button" data-load-model>Explore 3D model</button>
+  <div class="model-controls" aria-label="Model controls"><button type="button" data-model-action="rotate" disabled>Rotate</button><button type="button" data-model-action="reset" disabled>Reset view</button></div>
+  <p data-model-status aria-live="polite">Loads when you choose to explore.</p>
+</div><div class="model-note"><p>An original mechanical model, ready to inspect from different angles.</p><p>Load the model to rotate and reset the view.</p></div></div>
+<section class="inner-section container"><div class="case-body-grid"><h2 class="inner-heading">Let the object<br><em>do the talking.</em></h2><div class="inner-body"><p>This study is about viewpoint. Looking at the same object from a different angle reveals proportions and relationships that a single image can hide.</p><p>The model is presented as if it were on an engineering inspection table. The interface stays restrained so the mechanical form remains the focus.</p></div></div></section>
+<section class="inner-section container"><div class="inner-section-head"><p class="section-label">The idea</p><h2 class="inner-heading">A new view changes<br><em>what you notice.</em></h2></div><ol class="case-steps"><li><h3>Silhouette</h3><p>Read the overall shape before focusing on a component.</p></li><li><h3>Proportion</h3><p>Compare the scale of different parts within the assembly.</p></li><li><h3>Alignment</h3><p>Follow how pieces fit together across a shared direction.</p></li><li><h3>Structure</h3><p>Connect the visible form with its mechanical relationships.</p></li></ol></section>
+<div class="container"><a class="case-next" href="../fusion360/"><span>Explore another project</span><strong>First Fusion 360 Projects<b aria-hidden="true">↗</b></strong></a></div>
 
-    <section class="model-stage">
-      <div class="model-stage__sticky">
-        <canvas data-model="study" data-mode="inspection" data-preload="true" aria-hidden="true"></canvas>
-        <div class="model-stage__hud"><span>3209-0001-0007</span><span data-model-state>perspective</span></div>
-        <div class="model-stage__rail"><span></span></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section__bar"><span>Art direction</span><span>Less effect / more object</span></div>
-      <div class="section__grid section__grid--wide"><h2 class="display display--small" data-reveal>Look at the<br />machine from<br />another angle.</h2><div class="section__copy body-large" data-reveal><p>This page deliberately uses a different 3D language from DECODE. No repeated explode trick. The interaction is about silhouette, rotation and camera compression.</p><p class="muted">As the field of view narrows, the scene approaches a technical inspection feel without fully switching away from perspective rendering.</p></div></div>
-    </section>
-
-    <section class="section section--dark">
-      <div class="section__bar"><span>Why two 3D languages?</span><span>Consistency without repetition</span></div>
-      <div class="section__grid"><h2 class="display display--small" data-reveal>Same portfolio.<br />Different rhythm.</h2><div class="section__copy body-large" data-reveal><p>DECODE teaches through separation. 3209 teaches through viewpoint. Giving each model its own behavior makes the site feel directed rather than decorated.</p><p style="color:rgba(244,241,234,.52)">The common system is still the same: restrained typography, technical metadata, one motion curve and a camera that responds to the story.</p></div></div>
-    </section>
-
-    <section class="contact-hero"><p class="eyebrow" style="color:rgba(244,241,234,.48)">Next project</p><h1>Start<br />with CAD.</h1><div class="contact-hero__actions"><a href="../fusion360/" data-transition-title="Fusion 360">First Fusion 360 Projects ↗</a><a href="../" data-transition-title="work">All work ↗</a><a href="https://github.com/bolaternur" target="_blank" rel="noreferrer">GitHub ↗</a></div></section>
-  </main>
-  <script type="module" src="../../v5.js"></script>
+</main>
+<footer class="footer container">
+  <div class="footer-top"><h2>Have something<br>in mind?</h2><a class="pill-link" href="../../contact/">Get in touch <span aria-hidden="true">↗</span></a></div>
+  <a class="footer-wordmark" href="../../" aria-label="Ernur, back to home">Ernur<span>.</span></a>
+  <div class="footer-bottom"><span>© 2026 Ernur</span><span>Almaty, Kazakhstan</span><a href="https://github.com/bolaternur" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a href="#main">Back to top <span aria-hidden="true">↑</span></a></div>
+</footer>
 </body>
 </html>

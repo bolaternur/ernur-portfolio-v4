@@ -1,13 +1,9 @@
 # Local preview
 
-For the public portfolio use GitHub Pages: https://bolaternur.github.io/ernur-portfolio-v4/
+Run `npm run dev` from this directory, then open http://127.0.0.1:4178.
 
-If you download the repository, run it through a local HTTP server instead of double-clicking `index.html`:
+No npm install is necessary. Node.js 22 or later is required.
 
-```powershell
-py -m http.server 8080
-```
+For a production preview, run `npm run build` and then `node scripts/serve.mjs dist`.
 
-Then open http://localhost:8080/ .
-
-The repository includes the four original GLB models under `source-assets/`; the public GitHub Pages build generates browser-optimized copies automatically.
+`npm test` checks every page's local links, metadata and all production GLB headers.
