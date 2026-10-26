@@ -802,11 +802,16 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  font-size: clamp(35px, 7.3vw, 110px);
+  font-size: clamp(28px, 4.6vw, 72px);
   letter-spacing: -0.06em;
   line-height: 1.15;
 }
+.contact-destination a > span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 .contact-destination a span:last-child {
+  flex-shrink: 0;
   color: var(--inner-accent);
   transition: transform 0.3s;
 }
@@ -1326,7 +1331,7 @@
     padding: 34px 0;
   }
   .contact-destination a {
-    font-size: clamp(32px, 8.3vw, 62px);
+    font-size: clamp(25px, 5.2vw, 40px);
     gap: 16px;
   }
   .contact-destination p {
