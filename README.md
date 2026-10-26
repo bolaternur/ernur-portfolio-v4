@@ -24,6 +24,8 @@ node scripts/serve.mjs dist
 
 All existing routes are retained: home, work, five case studies, about, lab, contact and 404. Personal facts come from the previous site: RFMSH in Almaty, Python/C++/Java, AP preparation, Yandex Lyceum, 1C internship, commercial web work and personal interests. The only supplied contact is the GitHub profile. No clients, awards, testimonials, email addresses or professional titles were invented.
 
+The user also supplied their FAIO result: their team reached the top 48 out of 550 teams in an international artificial intelligence olympiad. Home and About include this achievement; 48 / 550 is approximately 8.7%. No exact rank, medal or competition year is claimed.
+
 ## Design and interactions
 
 - Astra reference: https://framer.com/projects/Astra-copy--Z0Evdd5pST6sXcDdttUz-cPZDk?node=augiA20Il
